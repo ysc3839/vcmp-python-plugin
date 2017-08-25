@@ -1,0 +1,56 @@
+	uint8_t (*OnServerInitialise) (void);
+	void (*OnServerShutdown) (void);
+	void (*OnServerFrame) (float elapsedTime);
+
+	uint8_t (*OnPluginCommand) (uint32_t commandIdentifier, const char* message);
+	uint8_t (*OnIncomingConnection) (char* playerName, size_t nameBufferSize, const char* userPassword, const char* ipAddress);
+	void (*OnClientScriptData) (int32_t playerId, const uint8_t* data, size_t size);
+
+	void (*OnPlayerConnect) (int32_t playerId);
+	void (*OnPlayerDisconnect) (int32_t playerId, vcmpDisconnectReason reason);
+
+	uint8_t (*OnPlayerRequestClass) (int32_t playerId, int32_t offset);
+	uint8_t (*OnPlayerRequestSpawn) (int32_t playerId);
+	void (*OnPlayerSpawn) (int32_t playerId);
+	void (*OnPlayerDeath) (int32_t playerId, int32_t killerId, int32_t reason, vcmpBodyPart bodyPart);
+	void (*OnPlayerUpdate) (int32_t playerId, vcmpPlayerUpdate updateType);
+
+	uint8_t (*OnPlayerRequestEnterVehicle) (int32_t playerId, int32_t vehicleId, int32_t slotIndex);
+	void (*OnPlayerEnterVehicle) (int32_t playerId, int32_t vehicleId, int32_t slotIndex);
+	void (*OnPlayerExitVehicle) (int32_t playerId, int32_t vehicleId);
+
+	void (*OnPlayerNameChange) (int32_t playerId, const char* oldName, const char* newName);
+	void (*OnPlayerStateChange) (int32_t playerId, vcmpPlayerState oldState, vcmpPlayerState newState);
+	void (*OnPlayerActionChange) (int32_t playerId, int32_t oldAction, int32_t newAction);
+	void (*OnPlayerOnFireChange) (int32_t playerId, uint8_t isOnFire);
+	void (*OnPlayerCrouchChange) (int32_t playerId, uint8_t isCrouching);
+	void (*OnPlayerGameKeysChange) (int32_t playerId, uint32_t oldKeys, uint32_t newKeys);
+	void (*OnPlayerBeginTyping) (int32_t playerId);
+	void (*OnPlayerEndTyping) (int32_t playerId);
+	void (*OnPlayerAwayChange) (int32_t playerId, uint8_t isAway);
+
+	uint8_t (*OnPlayerMessage) (int32_t playerId, const char* message);
+	uint8_t (*OnPlayerCommand) (int32_t playerId, const char* message);
+	uint8_t (*OnPlayerPrivateMessage) (int32_t playerId, int32_t targetPlayerId, const char* message);
+
+	void (*OnPlayerKeyBindDown) (int32_t playerId, int32_t bindId);
+	void (*OnPlayerKeyBindUp) (int32_t playerId, int32_t bindId);
+	void (*OnPlayerSpectate) (int32_t playerId, int32_t targetPlayerId);
+	void (*OnPlayerCrashReport) (int32_t playerId, const char* report);
+
+	void (*OnVehicleUpdate) (int32_t vehicleId, vcmpVehicleUpdate updateType);
+	void (*OnVehicleExplode) (int32_t vehicleId);
+	void (*OnVehicleRespawn) (int32_t vehicleId);
+
+	void (*OnObjectShot) (int32_t objectId, int32_t playerId, int32_t weaponId);
+	void (*OnObjectTouched) (int32_t objectId, int32_t playerId);
+
+	uint8_t (*OnPickupPickAttempt) (int32_t pickupId, int32_t playerId);
+	void (*OnPickupPicked) (int32_t pickupId, int32_t playerId);
+	void (*OnPickupRespawn) (int32_t pickupId);
+
+	void (*OnCheckpointEntered) (int32_t checkPointId, int32_t playerId);
+	void (*OnCheckpointExited) (int32_t checkPointId, int32_t playerId);
+
+	void (*OnEntityPoolChange) (vcmpEntityPool entityType, int32_t entityId, uint8_t isDeleted);
+	void (*OnServerPerformanceReport) (size_t entryCount, const char** descriptions, uint64_t* times);
