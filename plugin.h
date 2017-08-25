@@ -360,7 +360,7 @@ typedef struct {
 	/* vcmpErrorNoSuchEntity */
 	vcmpError (*DestroyCoordBlip) (int32_t index);
 	/* vcmpErrorNoSuchEntity */
-	vcmpError (*GetCoordBlipInfo) (int32_t index, int32_t* worldOut, float* xOut, float* yOUt, float* zOut, int32_t* scaleOut, uint32_t* colourOut, int32_t* spriteOut);
+	vcmpError (*GetCoordBlipInfo) (int32_t index, int32_t* worldOut, float* xOut, float* yOut, float* zOut, int32_t* scaleOut, uint32_t* colourOut, int32_t* spriteOut);
 
 	/*
 	 * Radios
@@ -871,9 +871,9 @@ typedef struct {
 	/* vcmpErrorNoSuchEntity */
 	vcmpError (*RotateObjectByEuler) (int32_t objectId, float x, float y, float z, uint32_t duration);
 	/* vcmpErrorNoSuchEntity */
-	vcmpError (*GetObjectRotation) (int32_t objectId, float* xOut, float* yOut, float *zOut, float *wOut);
+	vcmpError (*GetObjectRotation) (int32_t objectId, float* xOut, float* yOut, float* zOut, float* wOut);
 	/* vcmpErrorNoSuchEntity */
-	vcmpError (*GetObjectRotationEuler) (int32_t objectId, float* xOut, float* yOut, float *zOut);
+	vcmpError (*GetObjectRotationEuler) (int32_t objectId, float* xOut, float* yOut, float* zOut);
 	/* vcmpErrorNoSuchEntity */
 	vcmpError (*SetObjectShotReportEnabled) (int32_t objectId, uint8_t toggle);
 	/* GetLastError: vcmpErrorNoSuchEntity */
