@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(PROJECT_NAME vcmp-python-plugin)
-project(${PROJECT_NAME})
+project(vcmp-python-plugin)
 
 add_subdirectory(pybind11)
 
