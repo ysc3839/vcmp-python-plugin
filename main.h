@@ -26,7 +26,7 @@ void PythonExceptionHandler()
 	{
 		e.restore();
 		PyErr_Print();
-		if (!e.matches(PyExc_KeyboardInterrupt))
+		if (e.matches(PyExc_KeyboardInterrupt) || e.matches(PyExc_SystemExit))
 			vcmpFunctions->ShutdownServer();
 	}
 }
