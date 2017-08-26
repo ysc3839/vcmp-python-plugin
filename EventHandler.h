@@ -116,7 +116,8 @@ uint8_t OnIncomingConnection(char* playerName, size_t nameBufferSize, const char
 			auto func = moduleCallbacks->attr("on_incoming_connection");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerName, nameBufferSize, userPassword, ipAddress);
+				// FIXME: playerName may be editable.
+				py::object resobj = func.call(playerName, userPassword, ipAddress);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -393,7 +394,7 @@ void OnPlayerOnFireChange(int32_t playerId, uint8_t isOnFire)
 		{
 			auto func = moduleCallbacks->attr("on_player_on_fire_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, isOnFire);
+				func.call(playerId, py::bool_(isOnFire != 0));
 		}
 	}
 	catch (...)
@@ -410,7 +411,7 @@ void OnPlayerCrouchChange(int32_t playerId, uint8_t isCrouching)
 		{
 			auto func = moduleCallbacks->attr("on_player_crouch_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, isCrouching);
+				func.call(playerId, py::bool_(isCrouching != 0));
 		}
 	}
 	catch (...)
@@ -478,7 +479,7 @@ void OnPlayerAwayChange(int32_t playerId, uint8_t isAway)
 		{
 			auto func = moduleCallbacks->attr("on_player_away_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, isAway);
+				func.call(playerId, py::bool_(isAway != 0));
 		}
 	}
 	catch (...)
@@ -808,7 +809,7 @@ void OnEntityPoolChange(vcmpEntityPool entityType, int32_t entityId, uint8_t isD
 		{
 			auto func = moduleCallbacks->attr("on_entity_pool_change");
 			if (py::isinstance<py::function>(func))
-				func.call(entityType, entityId, isDeleted);
+				func.call(entityType, entityId, py::bool_(isDeleted != 0));
 		}
 	}
 	catch (...)
@@ -817,9 +818,20 @@ void OnEntityPoolChange(vcmpEntityPool entityType, int32_t entityId, uint8_t isD
 	}
 }
 
+// FIXME
 void OnServerPerformanceReport(size_t entryCount, const char** descriptions, uint64_t* times)
 {
-	try
+	vcmpFunctions->LogMessage("[DBG] OnServerPerformanceReport:");
+
+	const char* description;
+	for (int i = 0; description = descriptions[i]; i++)
+	{
+		vcmpFunctions->LogMessage("%s\n", description);
+	}
+
+	vcmpFunctions->LogMessage("Times:%lld\n", *times);
+
+	/*try
 	{
 		if (moduleCallbacks)
 		{
@@ -831,7 +843,7 @@ void OnServerPerformanceReport(size_t entryCount, const char** descriptions, uin
 	catch (...)
 	{
 		PythonExceptionHandler();
-	}
+	}*/
 }
 
 void RegisterCallbacks(PluginCallbacks* callbacks)
