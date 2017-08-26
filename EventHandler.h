@@ -903,5 +903,5 @@ void RegisterCallbacks(PluginCallbacks* callbacks)
 	callbacks->OnCheckpointExited = OnCheckpointExited;
 
 	callbacks->OnEntityPoolChange = OnEntityPoolChange;
-	callbacks->OnServerPerformanceReport = OnServerPerformanceReport;
+	//callbacks->OnServerPerformanceReport = OnServerPerformanceReport;
 }
