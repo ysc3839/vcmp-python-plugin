@@ -408,7 +408,7 @@ void RegisterFunctions(py::module functions)
 	functions.def("get_player_key", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerKey(playerId);
 	});
-	functions.def("get_player_name", [](int32_t playerId, char* buffer, size_t size) -> py::object {
+	functions.def("get_player_name", [](int32_t playerId) -> py::object {
 		char buffer[64];
 		if (vcmpFunctions->GetPlayerName(playerId, buffer, sizeof(buffer)) == vcmpErrorNone)
 			return py::str(buffer);
