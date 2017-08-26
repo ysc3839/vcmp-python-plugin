@@ -24,9 +24,14 @@ void PythonExceptionHandler()
 	}
 	catch (py::error_already_set e)
 	{
+		bool shutdown = false;
+		if (e.matches(PyExc_KeyboardInterrupt) || e.matches(PyExc_SystemExit))
+			shutdown = true;
+
 		e.restore();
 		PyErr_Print();
-		if (e.matches(PyExc_KeyboardInterrupt) || e.matches(PyExc_SystemExit))
+
+		if (shutdown)
 			vcmpFunctions->ShutdownServer();
 	}
 }
