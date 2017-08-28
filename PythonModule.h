@@ -78,16 +78,16 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->FindPlugin(pluginName);
 	});
 	functions.def("send_plugin_command", [](uint32_t commandIdentifier, const char* command) {
-		return vcmpFunctions->SendPluginCommand(commandIdentifier, "%s", command);
+		return static_cast<int32_t>(vcmpFunctions->SendPluginCommand(commandIdentifier, "%s", command));
 	});
 	functions.def("get_time", []() {
 		return vcmpFunctions->GetTime();
 	});
 	functions.def("log_message", [](const char* message) {
-		return vcmpFunctions->LogMessage("%s", message);
+		return static_cast<int32_t>(vcmpFunctions->LogMessage("%s", message));
 	});
 	functions.def("get_last_error", []() {
-		return vcmpFunctions->GetLastError();
+		return static_cast<int32_t>(vcmpFunctions->GetLastError());
 	});
 
 	/**
@@ -96,13 +96,13 @@ void RegisterFunctions(py::module functions)
 
 	functions.def("send_client_script_data", [](int32_t playerId, py::bytes bytes) {
 		std::string data = bytes;
-		return vcmpFunctions->SendClientScriptData(playerId, data.c_str(), data.size());
+		return static_cast<int32_t>(vcmpFunctions->SendClientScriptData(playerId, data.c_str(), data.size()));
 	});
 	functions.def("send_client_message", [](int32_t playerId, uint32_t colour, const char* message) {
-		return vcmpFunctions->SendClientMessage(playerId, colour, "%s", message);
+		return static_cast<int32_t>(vcmpFunctions->SendClientMessage(playerId, colour, "%s", message));
 	});
 	functions.def("send_game_message", [](int32_t playerId, int32_t type, const char* message) {
-		return vcmpFunctions->SendGameMessage(playerId, type, "%s", message);
+		return static_cast<int32_t>(vcmpFunctions->SendGameMessage(playerId, type, "%s", message));
 	});
 
 	/*
@@ -110,7 +110,7 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_server_name", [](const char* text) {
-		return vcmpFunctions->SetServerName(text);
+		return static_cast<int32_t>(vcmpFunctions->SetServerName(text));
 	});
 	functions.def("get_server_name", []() -> py::object {
 		char buffer[128];
@@ -119,13 +119,13 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_max_players", [](uint32_t maxPlayers) {
-		return vcmpFunctions->SetMaxPlayers(maxPlayers);
+		return static_cast<int32_t>(vcmpFunctions->SetMaxPlayers(maxPlayers));
 	});
 	functions.def("get_max_players", []() {
 		return vcmpFunctions->GetMaxPlayers();
 	});
 	functions.def("set_server_password", [](const char* password) {
-		return vcmpFunctions->SetServerPassword(password);
+		return static_cast<int32_t>(vcmpFunctions->SetServerPassword(password));
 	});
 	functions.def("get_server_password", []() -> py::object {
 		char buffer[128];
@@ -134,7 +134,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_game_mode_text", [](const char* gameMode) {
-		return vcmpFunctions->SetGameModeText(gameMode);
+		return static_cast<int32_t>(vcmpFunctions->SetGameModeText(gameMode));
 	});
 	functions.def("get_game_mode_text", []() -> py::object {
 		char buffer[128];
@@ -150,11 +150,11 @@ void RegisterFunctions(py::module functions)
 	 * Game environment settings
 	 */
 
-	functions.def("set_server_option", [](vcmpServerOption option, bool toggle) {
-		return vcmpFunctions->SetServerOption(option, toggle);
+	functions.def("set_server_option", [](int32_t option, bool toggle) {
+		return static_cast<int32_t>(vcmpFunctions->SetServerOption(static_cast<vcmpServerOption>(option), toggle));
 	});
-	functions.def("get_server_option", [](vcmpServerOption option) {
-		return py::bool_(vcmpFunctions->GetServerOption(option) != 0);
+	functions.def("get_server_option", [](int32_t option) {
+		return py::bool_(vcmpFunctions->GetServerOption(static_cast<vcmpServerOption>(option)) != 0);
 	});
 	functions.def("set_world_bounds", [](float maxX, float minX, float maxY, float minY) {
 		vcmpFunctions->SetWorldBounds(maxX, minX, maxY, minY);
@@ -239,10 +239,10 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("create_explosion", [](int32_t worldId, int32_t type, float x, float y, float z, int32_t responsiblePlayerId, bool atGroundLevel) {
-		return vcmpFunctions->CreateExplosion(worldId, type, x, y, z, responsiblePlayerId, atGroundLevel);
+		return static_cast<int32_t>(vcmpFunctions->CreateExplosion(worldId, type, x, y, z, responsiblePlayerId, atGroundLevel));
 	});
 	functions.def("play_sound", [](int32_t worldId, int32_t soundId, float x, float y, float z) {
-		return vcmpFunctions->PlaySound(worldId, soundId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->PlaySound(worldId, soundId, x, y, z));
 	});
 	functions.def("hide_map_object", [](int32_t modelId, int16_t tenthX, int16_t tenthY, int16_t tenthZ) {
 		vcmpFunctions->HideMapObject(modelId, tenthX, tenthY, tenthZ);
@@ -259,19 +259,19 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_weapon_data_value", [](int32_t weaponId, int32_t fieldId, double value) {
-		return vcmpFunctions->SetWeaponDataValue(weaponId, fieldId, value);
+		return static_cast<int32_t>(vcmpFunctions->SetWeaponDataValue(weaponId, fieldId, value));
 	});
 	functions.def("get_weapon_data_value", [](int32_t weaponId, int32_t fieldId) {
 		return vcmpFunctions->GetWeaponDataValue(weaponId, fieldId);
 	});
 	functions.def("reset_weapon_data_value", [](int32_t weaponId, int32_t fieldId) {
-		return vcmpFunctions->ResetWeaponDataValue(weaponId, fieldId);
+		return static_cast<int32_t>(vcmpFunctions->ResetWeaponDataValue(weaponId, fieldId));
 	});
 	functions.def("is_weapon_data_value_modified", [](int32_t weaponId, int32_t fieldId) {
 		return py::bool_(vcmpFunctions->IsWeaponDataValueModified(weaponId, fieldId) != 0);
 	});
 	functions.def("reset_weapon_data", [](int32_t weaponId) {
-		return vcmpFunctions->ResetWeaponData(weaponId);
+		return static_cast<int32_t>(vcmpFunctions->ResetWeaponData(weaponId));
 	});
 	functions.def("reset_all_weapon_data", []() {
 		vcmpFunctions->ResetAllWeaponData();
@@ -292,10 +292,10 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("register_key_bind", [](int32_t bindId, bool isCalledOnRelease, int32_t keyOne, int32_t keyTwo, int32_t keyThree) {
-		return vcmpFunctions->RegisterKeyBind(bindId, isCalledOnRelease, keyOne, keyTwo, keyThree);
+		return static_cast<int32_t>(vcmpFunctions->RegisterKeyBind(bindId, isCalledOnRelease, keyOne, keyTwo, keyThree));
 	});
 	functions.def("remove_key_bind", [](int32_t bindId) {
-		return vcmpFunctions->RemoveKeyBind(bindId);
+		return static_cast<int32_t>(vcmpFunctions->RemoveKeyBind(bindId));
 	});
 	functions.def("remove_all_key_binds", []() {
 		vcmpFunctions->RemoveAllKeyBinds();
@@ -309,7 +309,7 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->CreateCoordBlip(index, world, x, y, z, scale, colour, sprite);
 	});
 	functions.def("destroy_coord_blip", [](int32_t index) {
-		return vcmpFunctions->DestroyCoordBlip(index);
+		return static_cast<int32_t>(vcmpFunctions->DestroyCoordBlip(index));
 	});
 	functions.def("get_coord_blip_info", [](int32_t index) -> py::object {
 		int32_t worldOut, scaleOut, spriteOut;
@@ -325,10 +325,10 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("add_radio_stream", [](int32_t radioId, const char* radioName, const char* radioUrl, bool isListed) {
-		return vcmpFunctions->AddRadioStream(radioId, radioName, radioUrl, isListed);
+		return static_cast<int32_t>(vcmpFunctions->AddRadioStream(radioId, radioName, radioUrl, isListed));
 	});
 	functions.def("remove_radio_stream", [](int32_t radioId) {
-		return vcmpFunctions->RemoveRadioStream(radioId);
+		return static_cast<int32_t>(vcmpFunctions->RemoveRadioStream(radioId));
 	});
 
 	/*
@@ -356,7 +356,7 @@ void RegisterFunctions(py::module functions)
 		return py::bool_(vcmpFunctions->IsPlayerAdmin(playerId) != 0);
 	});
 	functions.def("set_player_admin", [](int32_t playerId, bool toggle) {
-		return vcmpFunctions->SetPlayerAdmin(playerId, toggle);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerAdmin(playerId, toggle));
 	});
 	functions.def("get_player_ip", [](int32_t playerId) -> py::object {
 		char buffer[64];
@@ -377,10 +377,10 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("kick_player", [](int32_t playerId) {
-		return vcmpFunctions->KickPlayer(playerId);
+		return static_cast<int32_t>(vcmpFunctions->KickPlayer(playerId));
 	});
 	functions.def("ban_player", [](int32_t playerId) {
-		return vcmpFunctions->BanPlayer(playerId);
+		return static_cast<int32_t>(vcmpFunctions->BanPlayer(playerId));
 	});
 	functions.def("ban_ip", [](char* ipAddress) {
 		vcmpFunctions->BanIP(ipAddress);
@@ -415,16 +415,16 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_player_name", [](int32_t playerId, const char* name) {
-		return vcmpFunctions->SetPlayerName(playerId, name);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerName(playerId, name));
 	});
 	functions.def("get_player_state", [](int32_t playerId) {
-		return vcmpFunctions->GetPlayerState(playerId);
+		return static_cast<int32_t>(vcmpFunctions->GetPlayerState(playerId));
 	});
-	functions.def("set_player_option", [](int32_t playerId, vcmpPlayerOption option, bool toggle) {
-		return vcmpFunctions->SetPlayerOption(playerId, option, toggle);
+	functions.def("set_player_option", [](int32_t playerId, int32_t option, bool toggle) {
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerOption(playerId, static_cast<vcmpPlayerOption>(option), toggle));
 	});
-	functions.def("get_player_option", [](int32_t playerId, vcmpPlayerOption option) {
-		return py::bool_(vcmpFunctions->GetPlayerOption(playerId, option) != 0);
+	functions.def("get_player_option", [](int32_t playerId, int32_t option) {
+		return py::bool_(vcmpFunctions->GetPlayerOption(playerId, static_cast<vcmpPlayerOption>(option)) != 0);
 	});
 
 	/*
@@ -432,13 +432,13 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_player_world", [](int32_t playerId, int32_t world) {
-		return vcmpFunctions->SetPlayerWorld(playerId, world);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerWorld(playerId, world));
 	});
 	functions.def("get_player_world", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerWorld(playerId);
 	});
 	functions.def("set_player_secondary_world", [](int32_t playerId, int32_t secondaryWorld) {
-		return vcmpFunctions->SetPlayerSecondaryWorld(playerId, secondaryWorld);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerSecondaryWorld(playerId, secondaryWorld));
 	});
 	functions.def("get_player_secondary_world", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerSecondaryWorld(playerId);
@@ -458,19 +458,19 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->GetPlayerClass(playerId);
 	});
 	functions.def("set_player_team", [](int32_t playerId, int32_t teamId) {
-		return vcmpFunctions->SetPlayerTeam(playerId, teamId);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerTeam(playerId, teamId));
 	});
 	functions.def("get_player_team", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerTeam(playerId);
 	});
 	functions.def("set_player_skin", [](int32_t playerId, int32_t skinId) {
-		return vcmpFunctions->SetPlayerSkin(playerId, skinId);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerSkin(playerId, skinId));
 	});
 	functions.def("get_player_skin", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerSkin(playerId);
 	});
 	functions.def("set_player_colour", [](int32_t playerId, uint32_t colour) {
-		return vcmpFunctions->SetPlayerColour(playerId, colour);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerColour(playerId, colour));
 	});
 	functions.def("get_player_colour", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerColour(playerId);
@@ -484,10 +484,10 @@ void RegisterFunctions(py::module functions)
 		return py::bool_(vcmpFunctions->IsPlayerSpawned(playerId) != 0);
 	});
 	functions.def("force_player_spawn", [](int32_t playerId) {
-		return vcmpFunctions->ForcePlayerSpawn(playerId);
+		return static_cast<int32_t>(vcmpFunctions->ForcePlayerSpawn(playerId));
 	});
 	functions.def("force_player_select", [](int32_t playerId) {
-		return vcmpFunctions->ForcePlayerSelect(playerId);
+		return static_cast<int32_t>(vcmpFunctions->ForcePlayerSelect(playerId));
 	});
 	functions.def("force_all_select", []() {
 		vcmpFunctions->ForceAllSelect();
@@ -501,22 +501,22 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("give_player_money", [](int32_t playerId, int32_t amount) {
-		return vcmpFunctions->GivePlayerMoney(playerId, amount);
+		return static_cast<int32_t>(vcmpFunctions->GivePlayerMoney(playerId, amount));
 	});
 	functions.def("set_player_money", [](int32_t playerId, int32_t amount) {
-		return vcmpFunctions->SetPlayerMoney(playerId, amount);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerMoney(playerId, amount));
 	});
 	functions.def("get_player_money", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerMoney(playerId);
 	});
 	functions.def("set_player_score", [](int32_t playerId, int32_t score) {
-		return vcmpFunctions->SetPlayerScore(playerId, score);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerScore(playerId, score));
 	});
 	functions.def("get_player_score", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerScore(playerId);
 	});
 	functions.def("set_player_wanted_level", [](int32_t playerId, int32_t level) {
-		return vcmpFunctions->SetPlayerWantedLevel(playerId, level);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerWantedLevel(playerId, level));
 	});
 	functions.def("get_player_wanted_level", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerWantedLevel(playerId);
@@ -533,19 +533,19 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_player_health", [](int32_t playerId, float health) {
-		return vcmpFunctions->SetPlayerHealth(playerId, health);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerHealth(playerId, health));
 	});
 	functions.def("get_player_health", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerHealth(playerId);
 	});
 	functions.def("set_player_armour", [](int32_t playerId, float armour) {
-		return vcmpFunctions->SetPlayerArmour(playerId, armour);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerArmour(playerId, armour));
 	});
 	functions.def("get_player_armour", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerArmour(playerId);
 	});
 	functions.def("set_player_immunity_flags", [](int32_t playerId, uint32_t flags) {
-		return vcmpFunctions->SetPlayerImmunityFlags(playerId, flags);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerImmunityFlags(playerId, flags));
 	});
 	functions.def("get_player_immunity_flags", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerImmunityFlags(playerId);
@@ -556,7 +556,7 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_player_position", [](int32_t playerId, float x, float y, float z) {
-		return vcmpFunctions->SetPlayerPosition(playerId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerPosition(playerId, x, y, z));
 	});
 	functions.def("get_player_position", [](int32_t playerId) -> py::object {
 		float xOut, yOut, zOut;
@@ -565,7 +565,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_player_speed", [](int32_t playerId, float x, float y, float z) {
-		return vcmpFunctions->SetPlayerSpeed(playerId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerSpeed(playerId, x, y, z));
 	});
 	functions.def("get_player_speed", [](int32_t playerId) -> py::object {
 		float xOut, yOut, zOut;
@@ -574,16 +574,16 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("add_player_speed", [](int32_t playerId, float x, float y, float z) {
-		return vcmpFunctions->AddPlayerSpeed(playerId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->AddPlayerSpeed(playerId, x, y, z));
 	});
 	functions.def("set_player_heading", [](int32_t playerId, float angle) {
-		return vcmpFunctions->SetPlayerHeading(playerId, angle);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerHeading(playerId, angle));
 	});
 	functions.def("get_player_heading", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerHeading(playerId);
 	});
 	functions.def("set_player_alpha", [](int32_t playerId, int32_t alpha, uint32_t fadeTime) {
-		return vcmpFunctions->SetPlayerAlpha(playerId, alpha, fadeTime);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerAlpha(playerId, alpha, fadeTime));
 	});
 	functions.def("get_player_alpha", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerAlpha(playerId);
@@ -623,13 +623,13 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("put_player_in_vehicle", [](int32_t playerId, int32_t vehicleId, int32_t slotIndex, bool makeRoom, bool warp) {
-		return vcmpFunctions->PutPlayerInVehicle(playerId, vehicleId, slotIndex, makeRoom, warp);
+		return static_cast<int32_t>(vcmpFunctions->PutPlayerInVehicle(playerId, vehicleId, slotIndex, makeRoom, warp));
 	});
 	functions.def("remove_player_from_vehicle", [](int32_t playerId) {
-		return vcmpFunctions->RemovePlayerFromVehicle(playerId);
+		return static_cast<int32_t>(vcmpFunctions->RemovePlayerFromVehicle(playerId));
 	});
 	functions.def("get_player_in_vehicle_status", [](int32_t playerId) {
-		return vcmpFunctions->GetPlayerInVehicleStatus(playerId);
+		return static_cast<int32_t>(vcmpFunctions->GetPlayerInVehicleStatus(playerId));
 	});
 	functions.def("get_player_in_vehicle_slot", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerInVehicleSlot(playerId);
@@ -643,10 +643,10 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("give_player_weapon", [](int32_t playerId, int32_t weaponId, int32_t ammo) {
-		return vcmpFunctions->GivePlayerWeapon(playerId, weaponId, ammo);
+		return static_cast<int32_t>(vcmpFunctions->GivePlayerWeapon(playerId, weaponId, ammo));
 	});
 	functions.def("set_player_weapon", [](int32_t playerId, int32_t weaponId, int32_t ammo) {
-		return vcmpFunctions->SetPlayerWeapon(playerId, weaponId, ammo);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerWeapon(playerId, weaponId, ammo));
 	});
 	functions.def("get_player_weapon", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerWeapon(playerId);
@@ -655,7 +655,7 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->GetPlayerWeaponAmmo(playerId);
 	});
 	functions.def("set_player_weapon_slot", [](int32_t playerId, int32_t slot) {
-		return vcmpFunctions->SetPlayerWeaponSlot(playerId, slot);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerWeaponSlot(playerId, slot));
 	});
 	functions.def("get_player_weapon_slot", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerWeaponSlot(playerId);
@@ -667,10 +667,10 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->GetPlayerAmmoAtSlot(playerId, slot);
 	});
 	functions.def("remove_player_weapon", [](int32_t playerId, int32_t weaponId) {
-		return vcmpFunctions->RemovePlayerWeapon(playerId, weaponId);
+		return static_cast<int32_t>(vcmpFunctions->RemovePlayerWeapon(playerId, weaponId));
 	});
 	functions.def("remove_all_weapons", [](int32_t playerId) {
-		return vcmpFunctions->RemoveAllWeapons(playerId);
+		return static_cast<int32_t>(vcmpFunctions->RemoveAllWeapons(playerId));
 	});
 
 	/*
@@ -678,10 +678,10 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_camera_position", [](int32_t playerId, float posX, float posY, float posZ, float lookX, float lookY, float lookZ) {
-		return vcmpFunctions->SetCameraPosition(playerId, posX, posY, posZ, lookX, lookY, lookZ);
+		return static_cast<int32_t>(vcmpFunctions->SetCameraPosition(playerId, posX, posY, posZ, lookX, lookY, lookZ));
 	});
 	functions.def("restore_camera", [](int32_t playerId) {
-		return vcmpFunctions->RestoreCamera(playerId);
+		return static_cast<int32_t>(vcmpFunctions->RestoreCamera(playerId));
 	});
 	functions.def("is_camera_locked", [](int32_t playerId) {
 		return py::bool_(vcmpFunctions->IsCameraLocked(playerId) != 0);
@@ -692,7 +692,7 @@ void RegisterFunctions(py::module functions)
 	 */
 
 	functions.def("set_player_animation", [](int32_t playerId, int32_t groupId, int32_t animationId) {
-		return vcmpFunctions->SetPlayerAnimation(playerId, groupId, animationId);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerAnimation(playerId, groupId, animationId));
 	});
 	functions.def("get_player_standing_on_vehicle", [](int32_t playerId) {
 		return vcmpFunctions->GetPlayerStandingOnVehicle(playerId);
@@ -707,18 +707,18 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->GetPlayerSpectateTarget(playerId);
 	});
 	functions.def("set_player_spectate_target", [](int32_t playerId, int32_t targetId) {
-		return vcmpFunctions->SetPlayerSpectateTarget(playerId, targetId);
+		return static_cast<int32_t>(vcmpFunctions->SetPlayerSpectateTarget(playerId, targetId));
 	});
 	functions.def("redirect_player_to_server", [](int32_t playerId, const char* ip, uint32_t port, const char* nick, const char* serverPassword, const char* userPassword) {
-		return vcmpFunctions->RedirectPlayerToServer(playerId, ip, port, nick, serverPassword, userPassword);
+		return static_cast<int32_t>(vcmpFunctions->RedirectPlayerToServer(playerId, ip, port, nick, serverPassword, userPassword));
 	});
 
 	/*
 	 * All entities
 	 */
 
-	functions.def("check_entity_exists", [](vcmpEntityPool entityPool, int32_t index) {
-		return py::bool_(vcmpFunctions->CheckEntityExists(entityPool, index) != 0);
+	functions.def("check_entity_exists", [](int32_t entityPool, int32_t index) {
+		return py::bool_(vcmpFunctions->CheckEntityExists(static_cast<vcmpEntityPool>(entityPool), index) != 0);
 	});
 
 	/*
@@ -729,25 +729,25 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->CreateVehicle(modelIndex, world, x, y, z, angle, primaryColour, secondaryColour);
 	});
 	functions.def("delete_vehicle", [](int32_t vehicleId) {
-		return vcmpFunctions->DeleteVehicle(vehicleId);
+		return static_cast<int32_t>(vcmpFunctions->DeleteVehicle(vehicleId));
 	});
-	functions.def("set_vehicle_option", [](int32_t vehicleId, vcmpVehicleOption option, bool toggle) {
-		return vcmpFunctions->SetVehicleOption(vehicleId, option, toggle);
+	functions.def("set_vehicle_option", [](int32_t vehicleId, int32_t option, bool toggle) {
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleOption(vehicleId, static_cast<vcmpVehicleOption>(option), toggle));
 	});
-	functions.def("get_vehicle_option", [](int32_t vehicleId, vcmpVehicleOption option) {
-		return py::bool_(vcmpFunctions->GetVehicleOption(vehicleId, option) != 0);
+	functions.def("get_vehicle_option", [](int32_t vehicleId, int32_t option) {
+		return py::bool_(vcmpFunctions->GetVehicleOption(vehicleId, static_cast<vcmpVehicleOption>(option)) != 0);
 	});
 	functions.def("get_vehicle_sync_source", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleSyncSource(vehicleId);
 	});
 	functions.def("get_vehicle_sync_type", [](int32_t vehicleId) {
-		return vcmpFunctions->GetVehicleSyncType(vehicleId);
+		return static_cast<int32_t>(vcmpFunctions->GetVehicleSyncType(vehicleId));
 	});
 	functions.def("is_vehicle_streamed_for_player", [](int32_t vehicleId, int32_t playerId) {
 		return py::bool_(vcmpFunctions->IsVehicleStreamedForPlayer(vehicleId, playerId) != 0);
 	});
 	functions.def("set_vehicle_world", [](int32_t vehicleId, int32_t world) {
-		return vcmpFunctions->SetVehicleWorld(vehicleId, world);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleWorld(vehicleId, world));
 	});
 	functions.def("get_vehicle_world", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleWorld(vehicleId);
@@ -759,22 +759,22 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->GetVehicleOccupant(vehicleId, slotIndex);
 	});
 	functions.def("respawn_vehicle", [](int32_t vehicleId) {
-		return vcmpFunctions->RespawnVehicle(vehicleId);
+		return static_cast<int32_t>(vcmpFunctions->RespawnVehicle(vehicleId));
 	});
 	functions.def("set_vehicle_immunity_flags", [](int32_t vehicleId, uint32_t immunityFlags) {
-		return vcmpFunctions->SetVehicleImmunityFlags(vehicleId, immunityFlags);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleImmunityFlags(vehicleId, immunityFlags));
 	});
 	functions.def("get_vehicle_immunity_flags", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleImmunityFlags(vehicleId);
 	});
 	functions.def("explode_vehicle", [](int32_t vehicleId) {
-		return vcmpFunctions->ExplodeVehicle(vehicleId);
+		return static_cast<int32_t>(vcmpFunctions->ExplodeVehicle(vehicleId));
 	});
 	functions.def("is_vehicle_wrecked", [](int32_t vehicleId) {
 		return py::bool_(vcmpFunctions->IsVehicleWrecked(vehicleId) != 0);
 	});
 	functions.def("set_vehicle_position", [](int32_t vehicleId, float x, float y, float z, bool removeOccupants) {
-		return vcmpFunctions->SetVehiclePosition(vehicleId, x, y, z, removeOccupants);
+		return static_cast<int32_t>(vcmpFunctions->SetVehiclePosition(vehicleId, x, y, z, removeOccupants));
 	});
 	functions.def("get_vehicle_position", [](int32_t vehicleId) -> py::object {
 		float xOut, yOut, zOut;
@@ -783,10 +783,10 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_rotation", [](int32_t vehicleId, float x, float y, float z, float w) {
-		return vcmpFunctions->SetVehicleRotation(vehicleId, x, y, z, w);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleRotation(vehicleId, x, y, z, w));
 	});
 	functions.def("set_vehicle_rotation_euler", [](int32_t vehicleId, float x, float y, float z) {
-		return vcmpFunctions->SetVehicleRotationEuler(vehicleId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleRotationEuler(vehicleId, x, y, z));
 	});
 	functions.def("get_vehicle_rotation", [](int32_t vehicleId) -> py::object {
 		float xOut, yOut, zOut, wOut;
@@ -801,7 +801,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_speed", [](int32_t vehicleId, float x, float y, float z, bool add, bool relative) {
-		return vcmpFunctions->SetVehicleSpeed(vehicleId, x, y, z, add, relative);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleSpeed(vehicleId, x, y, z, add, relative));
 	});
 	functions.def("get_vehicle_speed", [](int32_t vehicleId, bool relative) -> py::object {
 		float xOut, yOut, zOut;
@@ -810,7 +810,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_turn_speed", [](int32_t vehicleId, float x, float y, float z, bool add, bool relative) {
-		return vcmpFunctions->SetVehicleTurnSpeed(vehicleId, x, y, z, add, relative);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleTurnSpeed(vehicleId, x, y, z, add, relative));
 	});
 	functions.def("get_vehicle_turn_speed", [](int32_t vehicleId, bool relative) -> py::object {
 		float xOut, yOut, zOut;
@@ -819,7 +819,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_spawn_position", [](int32_t vehicleId, float x, float y, float z) {
-		return vcmpFunctions->SetVehicleSpawnPosition(vehicleId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleSpawnPosition(vehicleId, x, y, z));
 	});
 	functions.def("get_vehicle_spawn_position", [](int32_t vehicleId) -> py::object {
 		float xOut, yOut, zOut;
@@ -828,10 +828,10 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_spawn_rotation", [](int32_t vehicleId, float x, float y, float z, float w) {
-		return vcmpFunctions->SetVehicleSpawnRotation(vehicleId, x, y, z, w);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleSpawnRotation(vehicleId, x, y, z, w));
 	});
 	functions.def("set_vehicle_spawn_rotation_euler", [](int32_t vehicleId, float x, float y, float z) {
-		return vcmpFunctions->SetVehicleSpawnRotationEuler(vehicleId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleSpawnRotationEuler(vehicleId, x, y, z));
 	});
 	functions.def("get_vehicle_spawn_rotation", [](int32_t vehicleId) -> py::object {
 		float xOut, yOut, zOut, wOut;
@@ -846,19 +846,19 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_idle_respawn_timer", [](int32_t vehicleId, uint32_t millis) {
-		return vcmpFunctions->SetVehicleIdleRespawnTimer(vehicleId, millis);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleIdleRespawnTimer(vehicleId, millis));
 	});
 	functions.def("get_vehicle_idle_respawn_timer", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleIdleRespawnTimer(vehicleId);
 	});
 	functions.def("set_vehicle_health", [](int32_t vehicleId, float health) {
-		return vcmpFunctions->SetVehicleHealth(vehicleId, health);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleHealth(vehicleId, health));
 	});
 	functions.def("get_vehicle_health", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleHealth(vehicleId);
 	});
 	functions.def("set_vehicle_colour", [](int32_t vehicleId, int32_t primaryColour, int32_t secondaryColour) {
-		return vcmpFunctions->SetVehicleColour(vehicleId, primaryColour, secondaryColour);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleColour(vehicleId, primaryColour, secondaryColour));
 	});
 	functions.def("get_vehicle_colour", [](int32_t vehicleId) -> py::object {
 		int32_t primaryColourOut, secondaryColourOut;
@@ -867,25 +867,25 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_vehicle_part_status", [](int32_t vehicleId, int32_t partId, int32_t status) {
-		return vcmpFunctions->SetVehiclePartStatus(vehicleId, partId, status);
+		return static_cast<int32_t>(vcmpFunctions->SetVehiclePartStatus(vehicleId, partId, status));
 	});
 	functions.def("get_vehicle_part_status", [](int32_t vehicleId, int32_t partId) {
 		return vcmpFunctions->GetVehiclePartStatus(vehicleId, partId);
 	});
 	functions.def("set_vehicle_tyre_status", [](int32_t vehicleId, int32_t tyreId, int32_t status) {
-		return vcmpFunctions->SetVehicleTyreStatus(vehicleId, tyreId, status);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleTyreStatus(vehicleId, tyreId, status));
 	});
 	functions.def("get_vehicle_tyre_status", [](int32_t vehicleId, int32_t tyreId) {
 		return vcmpFunctions->GetVehicleTyreStatus(vehicleId, tyreId);
 	});
 	functions.def("set_vehicle_damage_data", [](int32_t vehicleId, uint32_t damageData) {
-		return vcmpFunctions->SetVehicleDamageData(vehicleId, damageData);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleDamageData(vehicleId, damageData));
 	});
 	functions.def("get_vehicle_damage_data", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleDamageData(vehicleId);
 	});
 	functions.def("set_vehicle_radio", [](int32_t vehicleId, int32_t radioId) {
-		return vcmpFunctions->SetVehicleRadio(vehicleId, radioId);
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleRadio(vehicleId, radioId));
 	});
 	functions.def("get_vehicle_radio", [](int32_t vehicleId) {
 		return vcmpFunctions->GetVehicleRadio(vehicleId);
@@ -908,31 +908,31 @@ void RegisterFunctions(py::module functions)
 		return py::bool_(vcmpFunctions->ExistsHandlingRule(modelIndex, ruleIndex) != 0);
 	});
 	functions.def("set_handling_rule", [](int32_t modelIndex, int32_t ruleIndex, double value) {
-		return vcmpFunctions->SetHandlingRule(modelIndex, ruleIndex, value);
+		return static_cast<int32_t>(vcmpFunctions->SetHandlingRule(modelIndex, ruleIndex, value));
 	});
 	functions.def("get_handling_rule", [](int32_t modelIndex, int32_t ruleIndex) {
 		return vcmpFunctions->GetHandlingRule(modelIndex, ruleIndex);
 	});
 	functions.def("reset_handling_rule", [](int32_t modelIndex, int32_t ruleIndex) {
-		return vcmpFunctions->ResetHandlingRule(modelIndex, ruleIndex);
+		return static_cast<int32_t>(vcmpFunctions->ResetHandlingRule(modelIndex, ruleIndex));
 	});
 	functions.def("reset_handling", [](int32_t modelIndex) {
-		return vcmpFunctions->ResetHandling(modelIndex);
+		return static_cast<int32_t>(vcmpFunctions->ResetHandling(modelIndex));
 	});
 	functions.def("exists_inst_handling_rule", [](int32_t vehicleId, int32_t ruleIndex) {
 		return py::bool_(vcmpFunctions->ExistsInstHandlingRule(vehicleId, ruleIndex) != 0);
 	});
 	functions.def("set_inst_handling_rule", [](int32_t vehicleId, int32_t ruleIndex, double value) {
-		return vcmpFunctions->SetInstHandlingRule(vehicleId, ruleIndex, value);
+		return static_cast<int32_t>(vcmpFunctions->SetInstHandlingRule(vehicleId, ruleIndex, value));
 	});
 	functions.def("get_inst_handling_rule", [](int32_t vehicleId, int32_t ruleIndex) {
 		return vcmpFunctions->GetInstHandlingRule(vehicleId, ruleIndex);
 	});
 	functions.def("reset_inst_handling_rule", [](int32_t vehicleId, int32_t ruleIndex) {
-		return vcmpFunctions->ResetInstHandlingRule(vehicleId, ruleIndex);
+		return static_cast<int32_t>(vcmpFunctions->ResetInstHandlingRule(vehicleId, ruleIndex));
 	});
 	functions.def("reset_inst_handling", [](int32_t vehicleId) {
-		return vcmpFunctions->ResetInstHandling(vehicleId);
+		return static_cast<int32_t>(vcmpFunctions->ResetInstHandling(vehicleId));
 	});
 
 	/*
@@ -943,40 +943,40 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->CreatePickup(modelIndex, world, quantity, x, y, z, alpha, isAutomatic);
 	});
 	functions.def("delete_pickup", [](int32_t pickupId) {
-		return vcmpFunctions->DeletePickup(pickupId);
+		return static_cast<int32_t>(vcmpFunctions->DeletePickup(pickupId));
 	});
 	functions.def("is_pickup_streamed_for_player", [](int32_t pickupId, int32_t playerId) {
 		return py::bool_(vcmpFunctions->IsPickupStreamedForPlayer(pickupId, playerId) != 0);
 	});
 	functions.def("set_pickup_world", [](int32_t pickupId, int32_t world) {
-		return vcmpFunctions->SetPickupWorld(pickupId, world);
+		return static_cast<int32_t>(vcmpFunctions->SetPickupWorld(pickupId, world));
 	});
 	functions.def("get_pickup_world", [](int32_t pickupId) {
 		return vcmpFunctions->GetPickupWorld(pickupId);
 	});
 	functions.def("set_pickup_alpha", [](int32_t pickupId, int32_t alpha) {
-		return vcmpFunctions->SetPickupAlpha(pickupId, alpha);
+		return static_cast<int32_t>(vcmpFunctions->SetPickupAlpha(pickupId, alpha));
 	});
 	functions.def("get_pickup_alpha", [](int32_t pickupId) {
 		return vcmpFunctions->GetPickupAlpha(pickupId);
 	});
 	functions.def("set_pickup_is_automatic", [](int32_t pickupId, bool toggle) {
-		return vcmpFunctions->SetPickupIsAutomatic(pickupId, toggle);
+		return static_cast<int32_t>(vcmpFunctions->SetPickupIsAutomatic(pickupId, toggle));
 	});
 	functions.def("is_pickup_automatic", [](int32_t pickupId) {
 		return py::bool_(vcmpFunctions->IsPickupAutomatic(pickupId) != 0);
 	});
 	functions.def("set_pickup_auto_timer", [](int32_t pickupId, uint32_t durationMillis) {
-		return vcmpFunctions->SetPickupAutoTimer(pickupId, durationMillis);
+		return static_cast<int32_t>(vcmpFunctions->SetPickupAutoTimer(pickupId, durationMillis));
 	});
 	functions.def("get_pickup_auto_timer", [](int32_t pickupId) {
 		return vcmpFunctions->GetPickupAutoTimer(pickupId);
 	});
 	functions.def("refresh_pickup", [](int32_t pickupId) {
-		return vcmpFunctions->RefreshPickup(pickupId);
+		return static_cast<int32_t>(vcmpFunctions->RefreshPickup(pickupId));
 	});
 	functions.def("set_pickup_position", [](int32_t pickupId, float x, float y, float z) {
-		return vcmpFunctions->SetPickupPosition(pickupId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetPickupPosition(pickupId, x, y, z));
 	});
 	functions.def("get_pickup_position", [](int32_t pickupId) -> py::object {
 		float xOut, yOut, zOut;
@@ -999,7 +999,7 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->CreateCheckPoint(playerId, world, isSphere, x, y, z, red, green, blue, alpha, radius);
 	});
 	functions.def("delete_check_point", [](int32_t checkPointId) {
-		return vcmpFunctions->DeleteCheckPoint(checkPointId);
+		return static_cast<int32_t>(vcmpFunctions->DeleteCheckPoint(checkPointId));
 	});
 	functions.def("is_check_point_streamed_for_player", [](int32_t checkPointId, int32_t playerId) {
 		return py::bool_(vcmpFunctions->IsCheckPointStreamedForPlayer(checkPointId, playerId) != 0);
@@ -1008,13 +1008,13 @@ void RegisterFunctions(py::module functions)
 		return py::bool_(vcmpFunctions->IsCheckPointSphere(checkPointId) != 0);
 	});
 	functions.def("set_check_point_world", [](int32_t checkPointId, int32_t world) {
-		return vcmpFunctions->SetCheckPointWorld(checkPointId, world);
+		return static_cast<int32_t>(vcmpFunctions->SetCheckPointWorld(checkPointId, world));
 	});
 	functions.def("get_check_point_world", [](int32_t checkPointId) {
 		return vcmpFunctions->GetCheckPointWorld(checkPointId);
 	});
 	functions.def("set_check_point_colour", [](int32_t checkPointId, int32_t red, int32_t green, int32_t blue, int32_t alpha) {
-		return vcmpFunctions->SetCheckPointColour(checkPointId, red, green, blue, alpha);
+		return static_cast<int32_t>(vcmpFunctions->SetCheckPointColour(checkPointId, red, green, blue, alpha));
 	});
 	functions.def("get_check_point_colour", [](int32_t checkPointId) -> py::object {
 		int32_t redOut, greenOut, blueOut, alphaOut;
@@ -1023,7 +1023,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_check_point_position", [](int32_t checkPointId, float x, float y, float z) {
-		return vcmpFunctions->SetCheckPointPosition(checkPointId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetCheckPointPosition(checkPointId, x, y, z));
 	});
 	functions.def("get_check_point_position", [](int32_t checkPointId) -> py::object {
 		float xOut, yOut, zOut;
@@ -1032,7 +1032,7 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_check_point_radius", [](int32_t checkPointId, float radius) {
-		return vcmpFunctions->SetCheckPointRadius(checkPointId, radius);
+		return static_cast<int32_t>(vcmpFunctions->SetCheckPointRadius(checkPointId, radius));
 	});
 	functions.def("get_check_point_radius", [](int32_t checkPointId) {
 		return vcmpFunctions->GetCheckPointRadius(checkPointId);
@@ -1049,7 +1049,7 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->CreateObject(modelIndex, world, x, y, z, alpha);
 	});
 	functions.def("delete_object", [](int32_t objectId) {
-		return vcmpFunctions->DeleteObject(objectId);
+		return static_cast<int32_t>(vcmpFunctions->DeleteObject(objectId));
 	});
 	functions.def("is_object_streamed_for_player", [](int32_t objectId, int32_t playerId) {
 		return py::bool_(vcmpFunctions->IsObjectStreamedForPlayer(objectId, playerId) != 0);
@@ -1058,25 +1058,25 @@ void RegisterFunctions(py::module functions)
 		return vcmpFunctions->GetObjectModel(objectId);
 	});
 	functions.def("set_object_world", [](int32_t objectId, int32_t world) {
-		return vcmpFunctions->SetObjectWorld(objectId, world);
+		return static_cast<int32_t>(vcmpFunctions->SetObjectWorld(objectId, world));
 	});
 	functions.def("get_object_world", [](int32_t objectId) {
 		return vcmpFunctions->GetObjectWorld(objectId);
 	});
 	functions.def("set_object_alpha", [](int32_t objectId, int32_t alpha, uint32_t duration) {
-		return vcmpFunctions->SetObjectAlpha(objectId, alpha, duration);
+		return static_cast<int32_t>(vcmpFunctions->SetObjectAlpha(objectId, alpha, duration));
 	});
 	functions.def("get_object_alpha", [](int32_t objectId) {
 		return vcmpFunctions->GetObjectAlpha(objectId);
 	});
 	functions.def("move_object_to", [](int32_t objectId, float x, float y, float z, uint32_t duration) {
-		return vcmpFunctions->MoveObjectTo(objectId, x, y, z, duration);
+		return static_cast<int32_t>(vcmpFunctions->MoveObjectTo(objectId, x, y, z, duration));
 	});
 	functions.def("move_object_by", [](int32_t objectId, float x, float y, float z, uint32_t duration) {
-		return vcmpFunctions->MoveObjectBy(objectId, x, y, z, duration);
+		return static_cast<int32_t>(vcmpFunctions->MoveObjectBy(objectId, x, y, z, duration));
 	});
 	functions.def("set_object_position", [](int32_t objectId, float x, float y, float z) {
-		return vcmpFunctions->SetObjectPosition(objectId, x, y, z);
+		return static_cast<int32_t>(vcmpFunctions->SetObjectPosition(objectId, x, y, z));
 	});
 	functions.def("get_object_position", [](int32_t objectId) -> py::object {
 		float xOut, yOut, zOut;
@@ -1085,16 +1085,16 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("rotate_object_to", [](int32_t objectId, float x, float y, float z, float w, uint32_t duration) {
-		return vcmpFunctions->RotateObjectTo(objectId, x, y, z, w, duration);
+		return static_cast<int32_t>(vcmpFunctions->RotateObjectTo(objectId, x, y, z, w, duration));
 	});
 	functions.def("rotate_object_to_euler", [](int32_t objectId, float x, float y, float z, uint32_t duration) {
-		return vcmpFunctions->RotateObjectToEuler(objectId, x, y, z, duration);
+		return static_cast<int32_t>(vcmpFunctions->RotateObjectToEuler(objectId, x, y, z, duration));
 	});
 	functions.def("rotate_object_by", [](int32_t objectId, float x, float y, float z, float w, uint32_t duration) {
-		return vcmpFunctions->RotateObjectBy(objectId, x, y, z, w, duration);
+		return static_cast<int32_t>(vcmpFunctions->RotateObjectBy(objectId, x, y, z, w, duration));
 	});
 	functions.def("rotate_object_by_euler", [](int32_t objectId, float x, float y, float z, uint32_t duration) {
-		return vcmpFunctions->RotateObjectByEuler(objectId, x, y, z, duration);
+		return static_cast<int32_t>(vcmpFunctions->RotateObjectByEuler(objectId, x, y, z, duration));
 	});
 	functions.def("get_object_rotation", [](int32_t objectId) -> py::object {
 		float xOut, yOut, zOut, wOut;
@@ -1109,13 +1109,13 @@ void RegisterFunctions(py::module functions)
 		return py::none();
 	});
 	functions.def("set_object_shot_report_enabled", [](int32_t objectId, bool toggle) {
-		return vcmpFunctions->SetObjectShotReportEnabled(objectId, toggle);
+		return static_cast<int32_t>(vcmpFunctions->SetObjectShotReportEnabled(objectId, toggle));
 	});
 	functions.def("is_object_shot_report_enabled", [](int32_t objectId) {
 		return py::bool_(vcmpFunctions->IsObjectShotReportEnabled(objectId) != 0);
 	});
 	functions.def("set_object_touched_report_enabled", [](int32_t objectId, bool toggle) {
-		return vcmpFunctions->SetObjectTouchedReportEnabled(objectId, toggle);
+		return static_cast<int32_t>(vcmpFunctions->SetObjectTouchedReportEnabled(objectId, toggle));
 	});
 	functions.def("is_object_touched_report_enabled", [](int32_t objectId) {
 		return py::bool_(vcmpFunctions->IsObjectTouchedReportEnabled(objectId) != 0);
