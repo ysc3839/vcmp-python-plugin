@@ -31,7 +31,7 @@ uint8_t OnServerInitialise()
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 				else
-					retval = 0;
+					retval = 1;
 			}
 		}
 	}
