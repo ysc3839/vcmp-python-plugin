@@ -15,5 +15,9 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 set(OS_NAME "linux")
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${OS_NAME}${_CMAKE_BITS}")
+execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c" "import sys;print(''.join(str(v) for v in sys.version_info[:2]));"
+    OUTPUT_VARIABLE PYTHON_VER)
+string(REGEX REPLACE "\n" "" PYTHON_VER ${PYTHON_VER})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-cpython${PYTHON_VER}-${OS_NAME}${_CMAKE_BITS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
