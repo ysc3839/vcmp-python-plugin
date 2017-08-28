@@ -5,7 +5,7 @@ uint8_t OnServerInitialise()
 	uint8_t retval = 0;
 
 	std::ifstream f("server.cfg", std::ios::binary);
-	
+
 	std::string moduleName;
 	std::string prefix("pymodule ");
 	for (std::string line; std::getline(f, line);)
@@ -172,7 +172,7 @@ void OnPlayerDisconnect(int32_t playerId, vcmpDisconnectReason reason)
 		{
 			auto func = moduleCallbacks->attr("on_player_disconnect");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, reason);
+				func.call(playerId, static_cast<int32_t>(reason));
 		}
 	}
 	catch (...)
@@ -252,7 +252,7 @@ void OnPlayerDeath(int32_t playerId, int32_t killerId, int32_t reason, vcmpBodyP
 		{
 			auto func = moduleCallbacks->attr("on_player_death");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, killerId, reason, bodyPart);
+				func.call(playerId, killerId, reason, static_cast<int32_t>(bodyPart));
 		}
 	}
 	catch (...)
@@ -269,7 +269,7 @@ void OnPlayerUpdate(int32_t playerId, vcmpPlayerUpdate updateType)
 		{
 			auto func = moduleCallbacks->attr("on_player_update");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, updateType);
+				func.call(playerId, static_cast<int32_t>(updateType));
 		}
 	}
 	catch (...)
@@ -360,7 +360,7 @@ void OnPlayerStateChange(int32_t playerId, vcmpPlayerState oldState, vcmpPlayerS
 		{
 			auto func = moduleCallbacks->attr("on_player_state_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, oldState, newState);
+				func.call(playerId, static_cast<int32_t>(oldState), static_cast<int32_t>(newState));
 		}
 	}
 	catch (...)
@@ -633,7 +633,7 @@ void OnVehicleUpdate(int32_t vehicleId, vcmpVehicleUpdate updateType)
 		{
 			auto func = moduleCallbacks->attr("on_vehicle_update");
 			if (py::isinstance<py::function>(func))
-				func.call(vehicleId, updateType);
+				func.call(vehicleId, static_cast<int32_t>(updateType));
 		}
 	}
 	catch (...)
@@ -809,7 +809,7 @@ void OnEntityPoolChange(vcmpEntityPool entityType, int32_t entityId, uint8_t isD
 		{
 			auto func = moduleCallbacks->attr("on_entity_pool_change");
 			if (py::isinstance<py::function>(func))
-				func.call(entityType, entityId, py::bool_(isDeleted != 0));
+				func.call(static_cast<int32_t>(entityType), entityId, py::bool_(isDeleted != 0));
 		}
 	}
 	catch (...)
