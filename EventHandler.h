@@ -138,7 +138,7 @@ void OnClientScriptData(int32_t playerId, const uint8_t* data, size_t size)
 		{
 			auto func = moduleCallbacks->attr("on_client_script_data");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, py::bytes((char*)data, size));
+				func.call(playerId, py::bytes(reinterpret_cast<const char*>(data), size));
 		}
 	}
 	catch (...)
