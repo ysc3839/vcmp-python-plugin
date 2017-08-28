@@ -34,4 +34,8 @@ void PythonExceptionHandler()
 		if (shutdown)
 			vcmpFunctions->ShutdownServer();
 	}
+	catch (std::exception e)
+	{
+		vcmpFunctions->LogMessage("Exception: %s", e.what());
+	}
 }
