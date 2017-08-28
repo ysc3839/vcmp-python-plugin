@@ -76,6 +76,13 @@ void OnServerFrame(float elapsedTime)
 			if (py::isinstance<py::function>(func))
 				func.call(elapsedTime);
 		}
+
+		// If there's no on_server_frame handler, python has no chances to process other threads and Ctrl-C events.
+		// This allows python to process them.
+		Py_BEGIN_ALLOW_THREADS Py_END_ALLOW_THREADS
+
+		if (PyErr_CheckSignals() == -1)
+			throw py::error_already_set();
 	}
 	catch (...)
 	{
