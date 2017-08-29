@@ -19,5 +19,5 @@ execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c" "import sys;print(''.join(st
     OUTPUT_VARIABLE PYTHON_VER)
 string(REGEX REPLACE "\n" "" PYTHON_VER ${PYTHON_VER})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-cpython${PYTHON_VER}-${OS_NAME}${_CMAKE_BITS}")
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-cpy${PYTHON_VER}-${OS_NAME}${_CMAKE_BITS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
