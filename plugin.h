@@ -180,8 +180,14 @@ typedef enum {
 	vcmpVehicleOptionRadioLocked = 3,
 	vcmpVehicleOptionGhost = 4,
 	vcmpVehicleOptionSiren = 5,
+	vcmpVehicleOptionSingleUse = 6,
 	forceSizeVcmpVehicleOption = INT32_MAX
 } vcmpVehicleOption;
+
+typedef enum {
+	vcmpPickupOptionSingleUse = 0,
+	forceSizeVcmpPickupOption = INT32_MAX
+} vcmpPickupOption;
 
 typedef struct {
 	uint32_t structSize;
@@ -360,7 +366,7 @@ typedef struct {
 	/* vcmpErrorNoSuchEntity */
 	vcmpError (*DestroyCoordBlip) (int32_t index);
 	/* vcmpErrorNoSuchEntity */
-	vcmpError (*GetCoordBlipInfo) (int32_t index, int32_t* worldOut, float* xOut, float* yOut, float* zOut, int32_t* scaleOut, uint32_t* colourOut, int32_t* spriteOut);
+	vcmpError (*GetCoordBlipInfo) (int32_t index, int32_t* worldOut, float* xOut, float* yOUt, float* zOut, int32_t* scaleOut, uint32_t* colourOut, int32_t* spriteOut);
 
 	/*
 	 * Radios
@@ -871,9 +877,9 @@ typedef struct {
 	/* vcmpErrorNoSuchEntity */
 	vcmpError (*RotateObjectByEuler) (int32_t objectId, float x, float y, float z, uint32_t duration);
 	/* vcmpErrorNoSuchEntity */
-	vcmpError (*GetObjectRotation) (int32_t objectId, float* xOut, float* yOut, float* zOut, float* wOut);
+	vcmpError (*GetObjectRotation) (int32_t objectId, float* xOut, float* yOut, float *zOut, float *wOut);
 	/* vcmpErrorNoSuchEntity */
-	vcmpError (*GetObjectRotationEuler) (int32_t objectId, float* xOut, float* yOut, float* zOut);
+	vcmpError (*GetObjectRotationEuler) (int32_t objectId, float* xOut, float* yOut, float *zOut);
 	/* vcmpErrorNoSuchEntity */
 	vcmpError (*SetObjectShotReportEnabled) (int32_t objectId, uint8_t toggle);
 	/* GetLastError: vcmpErrorNoSuchEntity */
@@ -882,6 +888,24 @@ typedef struct {
 	vcmpError (*SetObjectTouchedReportEnabled) (int32_t objectId, uint8_t toggle);
 	/* GetLastError: vcmpErrorNoSuchEntity */
 	uint8_t (*IsObjectTouchedReportEnabled) (int32_t objectId);
+
+	// TODO: MOVE LATER
+	vcmpError (*GetPlayerModuleList) (int32_t playerId);
+
+	/* vcmpErrorNoSuchEntity, vcmpErrorArgumentOutOfBounds */
+	vcmpError (*SetPickupOption) (int32_t pickupId, vcmpPickupOption option, uint8_t toggle);
+	/* GetLastError: vcmpErrorNoSuchEntity, vcmpErrorArgumentOutOfBounds */
+	uint8_t (*GetPickupOption) (int32_t pickupId, vcmpPickupOption option);
+
+	/* success */
+	void (*SetFallTimer) (uint16_t timeRate);
+	/* success */
+	uint16_t (*GetFallTimer) (void);
+
+	/* vcmpErrorNoSuchEntity */
+	vcmpError(*SetVehicleLightsData) (int32_t vehicleId, uint32_t lightsData);
+	/* GetLastError: vcmpErrorNoSuchEntity */
+	uint32_t(*GetVehicleLightsData) (int32_t vehicleId);
 
 } PluginFuncs;
 
@@ -944,5 +968,8 @@ typedef struct {
 
 	void (*OnEntityPoolChange) (vcmpEntityPool entityType, int32_t entityId, uint8_t isDeleted);
 	void (*OnServerPerformanceReport) (size_t entryCount, const char** descriptions, uint64_t* times);
+
+	// TODO: MOVE LATER
+	void(*OnPlayerModuleList) (int32_t playerId, const char* list);
 
 } PluginCallbacks;

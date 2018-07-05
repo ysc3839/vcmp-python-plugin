@@ -853,6 +853,24 @@ void OnServerPerformanceReport(size_t entryCount, const char** descriptions, uin
 	}*/
 }
 
+// TODO: MOVE LATER
+void OnPlayerModuleList(int32_t playerId, const char* list)
+{
+	try
+	{
+		if (moduleCallbacks)
+		{
+			auto func = moduleCallbacks->attr("on_player_module_list");
+			if (py::isinstance<py::function>(func))
+				func.call(playerId, list);
+		}
+	}
+	catch (...)
+	{
+		PythonExceptionHandler();
+	}
+}
+
 void RegisterCallbacks(PluginCallbacks* callbacks)
 {
 	callbacks->OnServerInitialise = OnServerInitialise;
@@ -911,4 +929,7 @@ void RegisterCallbacks(PluginCallbacks* callbacks)
 
 	callbacks->OnEntityPoolChange = OnEntityPoolChange;
 	//callbacks->OnServerPerformanceReport = OnServerPerformanceReport;
+
+	// TODO: MOVE LATER
+	callbacks->OnPlayerModuleList = OnPlayerModuleList;
 }

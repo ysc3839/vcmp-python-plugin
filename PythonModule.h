@@ -44,7 +44,9 @@ const char *callbackNames[] = {
 	"on_checkpoint_entered",
 	"on_checkpoint_exited",
 	"on_entity_pool_change",
-	"on_server_performance_report"
+	"on_server_performance_report",
+	// TODO: MOVE LATER
+	"on_player_module_list"
 };
 
 void RegisterFunctions(py::module functions)
@@ -1119,6 +1121,29 @@ void RegisterFunctions(py::module functions)
 	});
 	functions.def("is_object_touched_report_enabled", [](int32_t objectId) {
 		return py::bool_(vcmpFunctions->IsObjectTouchedReportEnabled(objectId) != 0);
+	});
+
+	// TODO: MOVE LATER
+	functions.def("get_player_module_list", [](int32_t playerId) {
+		return static_cast<int32_t>(vcmpFunctions->GetPlayerModuleList(playerId));
+	});
+	functions.def("set_pickup_option", [](int32_t pickupId, int32_t option, bool toggle) {
+		return static_cast<int32_t>(vcmpFunctions->SetPickupOption(pickupId, static_cast<vcmpPickupOption>(option), toggle));
+	});
+	functions.def("get_pickup_option", [](int32_t pickupId, int32_t option) {
+		return py::bool_(vcmpFunctions->GetPickupOption(pickupId, static_cast<vcmpPickupOption>(option)) != 0);
+	});
+	functions.def("set_fall_timer", [](uint16_t timeRate) {
+		vcmpFunctions->SetFallTimer(timeRate);
+	});
+	functions.def("get_fall_timer", []() {
+		return vcmpFunctions->GetFallTimer();
+	});
+	functions.def("set_vehicle_lights_data", [](int32_t vehicleId, uint32_t lightsData) {
+		return static_cast<int32_t>(vcmpFunctions->SetVehicleLightsData(vehicleId, lightsData));
+	});
+	functions.def("get_vehicle_lights_data", [](int32_t vehicleId) {
+		return vcmpFunctions->GetVehicleLightsData(vehicleId);
 	});
 }
 
