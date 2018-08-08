@@ -10,7 +10,7 @@ This project includes `pybind11` submodule, use:
 `git clone --recursive https://github.com/ysc3839/vcmp-python-plugin.git`
 
 ## Linux
-You need to install `python-dev` or `python3-dev` and `camke`.
+You need to install `python3-dev` and `camke`.
 
 On Debian-like systems just run:
 `sudo apt install python3-dev cmake`
