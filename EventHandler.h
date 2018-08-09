@@ -123,10 +123,15 @@ uint8_t OnIncomingConnection(char* playerName, size_t nameBufferSize, const char
 			auto func = moduleCallbacks->attr("on_incoming_connection");
 			if (py::isinstance<py::function>(func))
 			{
-				// FIXME: playerName may be editable.
-				py::object resobj = func.call(playerName, userPassword, ipAddress);
+				--nameBufferSize;
+				py::object resobj = func.call(playerName, nameBufferSize, userPassword, ipAddress);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
+				else if (py::isinstance<py::str>(resobj)) // Change player name.
+				{
+					size_t len = resobj.cast<std::string>().copy(playerName, nameBufferSize);
+					playerName[len] = 0;
+				}
 			}
 		}
 	}
@@ -825,32 +830,27 @@ void OnEntityPoolChange(vcmpEntityPool entityType, int32_t entityId, uint8_t isD
 	}
 }
 
-// FIXME
 void OnServerPerformanceReport(size_t entryCount, const char** descriptions, uint64_t* times)
 {
-	vcmpFunctions->LogMessage("[DBG] OnServerPerformanceReport:");
-
-	const char* description;
-	for (int i = 0; description = descriptions[i]; i++)
-	{
-		vcmpFunctions->LogMessage("%s\n", description);
-	}
-
-	vcmpFunctions->LogMessage("Times:%lld\n", *times);
-
-	/*try
+	try
 	{
 		if (moduleCallbacks)
 		{
 			auto func = moduleCallbacks->attr("on_server_performance_report");
 			if (py::isinstance<py::function>(func))
-				func.call(entryCount, descriptions, times);
+			{
+				py::dict dict;
+				for (size_t i = 0; i < entryCount; i++) {
+					dict[descriptions[i]] = times[i];
+				}
+				func.call(dict);
+			}
 		}
 	}
 	catch (...)
 	{
 		PythonExceptionHandler();
-	}*/
+	}
 }
 
 // TODO: MOVE LATER
@@ -928,7 +928,7 @@ void RegisterCallbacks(PluginCallbacks* callbacks)
 	callbacks->OnCheckpointExited = OnCheckpointExited;
 
 	callbacks->OnEntityPoolChange = OnEntityPoolChange;
-	//callbacks->OnServerPerformanceReport = OnServerPerformanceReport;
+	callbacks->OnServerPerformanceReport = OnServerPerformanceReport;
 
 	// TODO: MOVE LATER
 	callbacks->OnPlayerModuleList = OnPlayerModuleList;

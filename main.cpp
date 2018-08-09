@@ -4,7 +4,7 @@
 
 extern "C" EXPORT unsigned int VcmpPluginInit(PluginFuncs* pluginFunctions, PluginCallbacks* pluginCallbacks, PluginInfo* pluginInfo)
 {
-    pluginInfo->pluginVersion = 0x100;
+    pluginInfo->pluginVersion = 0x101;
 	pluginInfo->apiMajorVersion = PLUGIN_API_MAJOR;
 	pluginInfo->apiMinorVersion = PLUGIN_API_MINOR;
     strcpy(pluginInfo->name, "vcmp-python-plugin");
