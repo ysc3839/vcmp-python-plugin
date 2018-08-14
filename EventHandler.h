@@ -27,7 +27,7 @@ uint8_t OnServerInitialise()
 			auto func = moduleCallbacks->attr("on_server_initialise");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call();
+				py::object resobj = func();
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 				else
@@ -52,7 +52,7 @@ void OnServerShutdown()
 		{
 			auto func = moduleCallbacks->attr("on_server_shutdown");
 			if (py::isinstance<py::function>(func))
-				func.call();
+				func();
 		}
 	}
 	catch (...)
@@ -74,7 +74,7 @@ void OnServerFrame(float elapsedTime)
 		{
 			auto func = moduleCallbacks->attr("on_server_frame");
 			if (py::isinstance<py::function>(func))
-				func.call(elapsedTime);
+				func(elapsedTime);
 		}
 
 		// If there's no on_server_frame handler, python has no chances to process other threads and Ctrl-C events.
@@ -100,7 +100,7 @@ uint8_t OnPluginCommand(uint32_t commandIdentifier, const char* message)
 			auto func = moduleCallbacks->attr("on_plugin_command");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(commandIdentifier, message);
+				py::object resobj = func(commandIdentifier, message);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -124,7 +124,7 @@ uint8_t OnIncomingConnection(char* playerName, size_t nameBufferSize, const char
 			if (py::isinstance<py::function>(func))
 			{
 				--nameBufferSize;
-				py::object resobj = func.call(playerName, nameBufferSize, userPassword, ipAddress);
+				py::object resobj = func(playerName, nameBufferSize, userPassword, ipAddress);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 				else if (py::isinstance<py::str>(resobj)) // Change player name.
@@ -150,7 +150,7 @@ void OnClientScriptData(int32_t playerId, const uint8_t* data, size_t size)
 		{
 			auto func = moduleCallbacks->attr("on_client_script_data");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, py::bytes(reinterpret_cast<const char*>(data), size));
+				func(playerId, py::bytes(reinterpret_cast<const char*>(data), size));
 		}
 	}
 	catch (...)
@@ -167,7 +167,7 @@ void OnPlayerConnect(int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_player_connect");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId);
+				func(playerId);
 		}
 	}
 	catch (...)
@@ -184,7 +184,7 @@ void OnPlayerDisconnect(int32_t playerId, vcmpDisconnectReason reason)
 		{
 			auto func = moduleCallbacks->attr("on_player_disconnect");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, static_cast<int32_t>(reason));
+				func(playerId, static_cast<int32_t>(reason));
 		}
 	}
 	catch (...)
@@ -203,7 +203,7 @@ uint8_t OnPlayerRequestClass(int32_t playerId, int32_t offset)
 			auto func = moduleCallbacks->attr("on_player_request_class");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerId, offset);
+				py::object resobj = func(playerId, offset);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -226,7 +226,7 @@ uint8_t OnPlayerRequestSpawn(int32_t playerId)
 			auto func = moduleCallbacks->attr("on_player_request_spawn");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerId);
+				py::object resobj = func(playerId);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -247,7 +247,7 @@ void OnPlayerSpawn(int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_player_spawn");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId);
+				func(playerId);
 		}
 	}
 	catch (...)
@@ -264,7 +264,7 @@ void OnPlayerDeath(int32_t playerId, int32_t killerId, int32_t reason, vcmpBodyP
 		{
 			auto func = moduleCallbacks->attr("on_player_death");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, killerId, reason, static_cast<int32_t>(bodyPart));
+				func(playerId, killerId, reason, static_cast<int32_t>(bodyPart));
 		}
 	}
 	catch (...)
@@ -281,7 +281,7 @@ void OnPlayerUpdate(int32_t playerId, vcmpPlayerUpdate updateType)
 		{
 			auto func = moduleCallbacks->attr("on_player_update");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, static_cast<int32_t>(updateType));
+				func(playerId, static_cast<int32_t>(updateType));
 		}
 	}
 	catch (...)
@@ -300,7 +300,7 @@ uint8_t OnPlayerRequestEnterVehicle(int32_t playerId, int32_t vehicleId, int32_t
 			auto func = moduleCallbacks->attr("on_player_request_enter_vehicle");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerId, vehicleId, slotIndex);
+				py::object resobj = func(playerId, vehicleId, slotIndex);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -321,7 +321,7 @@ void OnPlayerEnterVehicle(int32_t playerId, int32_t vehicleId, int32_t slotIndex
 		{
 			auto func = moduleCallbacks->attr("on_player_enter_vehicle");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, vehicleId, slotIndex);
+				func(playerId, vehicleId, slotIndex);
 		}
 	}
 	catch (...)
@@ -338,7 +338,7 @@ void OnPlayerExitVehicle(int32_t playerId, int32_t vehicleId)
 		{
 			auto func = moduleCallbacks->attr("on_player_exit_vehicle");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, vehicleId);
+				func(playerId, vehicleId);
 		}
 	}
 	catch (...)
@@ -355,7 +355,7 @@ void OnPlayerNameChange(int32_t playerId, const char* oldName, const char* newNa
 		{
 			auto func = moduleCallbacks->attr("on_player_name_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, oldName, newName);
+				func(playerId, oldName, newName);
 		}
 	}
 	catch (...)
@@ -372,7 +372,7 @@ void OnPlayerStateChange(int32_t playerId, vcmpPlayerState oldState, vcmpPlayerS
 		{
 			auto func = moduleCallbacks->attr("on_player_state_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, static_cast<int32_t>(oldState), static_cast<int32_t>(newState));
+				func(playerId, static_cast<int32_t>(oldState), static_cast<int32_t>(newState));
 		}
 	}
 	catch (...)
@@ -389,7 +389,7 @@ void OnPlayerActionChange(int32_t playerId, int32_t oldAction, int32_t newAction
 		{
 			auto func = moduleCallbacks->attr("on_player_action_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, oldAction, newAction);
+				func(playerId, oldAction, newAction);
 		}
 	}
 	catch (...)
@@ -406,7 +406,7 @@ void OnPlayerOnFireChange(int32_t playerId, uint8_t isOnFire)
 		{
 			auto func = moduleCallbacks->attr("on_player_on_fire_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, py::bool_(isOnFire != 0));
+				func(playerId, py::bool_(isOnFire != 0));
 		}
 	}
 	catch (...)
@@ -423,7 +423,7 @@ void OnPlayerCrouchChange(int32_t playerId, uint8_t isCrouching)
 		{
 			auto func = moduleCallbacks->attr("on_player_crouch_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, py::bool_(isCrouching != 0));
+				func(playerId, py::bool_(isCrouching != 0));
 		}
 	}
 	catch (...)
@@ -440,7 +440,7 @@ void OnPlayerGameKeysChange(int32_t playerId, uint32_t oldKeys, uint32_t newKeys
 		{
 			auto func = moduleCallbacks->attr("on_player_game_keys_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, oldKeys, newKeys);
+				func(playerId, oldKeys, newKeys);
 		}
 	}
 	catch (...)
@@ -457,7 +457,7 @@ void OnPlayerBeginTyping(int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_player_begin_typing");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId);
+				func(playerId);
 		}
 	}
 	catch (...)
@@ -474,7 +474,7 @@ void OnPlayerEndTyping(int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_player_end_typing");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId);
+				func(playerId);
 		}
 	}
 	catch (...)
@@ -491,7 +491,7 @@ void OnPlayerAwayChange(int32_t playerId, uint8_t isAway)
 		{
 			auto func = moduleCallbacks->attr("on_player_away_change");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, py::bool_(isAway != 0));
+				func(playerId, py::bool_(isAway != 0));
 		}
 	}
 	catch (...)
@@ -510,7 +510,7 @@ uint8_t OnPlayerMessage(int32_t playerId, const char* message)
 			auto func = moduleCallbacks->attr("on_player_message");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerId, message);
+				py::object resobj = func(playerId, message);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -533,7 +533,7 @@ uint8_t OnPlayerCommand(int32_t playerId, const char* message)
 			auto func = moduleCallbacks->attr("on_player_command");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerId, message);
+				py::object resobj = func(playerId, message);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -556,7 +556,7 @@ uint8_t OnPlayerPrivateMessage(int32_t playerId, int32_t targetPlayerId, const c
 			auto func = moduleCallbacks->attr("on_player_private_message");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(playerId, targetPlayerId, message);
+				py::object resobj = func(playerId, targetPlayerId, message);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -577,7 +577,7 @@ void OnPlayerKeyBindDown(int32_t playerId, int32_t bindId)
 		{
 			auto func = moduleCallbacks->attr("on_player_key_bind_down");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, bindId);
+				func(playerId, bindId);
 		}
 	}
 	catch (...)
@@ -594,7 +594,7 @@ void OnPlayerKeyBindUp(int32_t playerId, int32_t bindId)
 		{
 			auto func = moduleCallbacks->attr("on_player_key_bind_up");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, bindId);
+				func(playerId, bindId);
 		}
 	}
 	catch (...)
@@ -611,7 +611,7 @@ void OnPlayerSpectate(int32_t playerId, int32_t targetPlayerId)
 		{
 			auto func = moduleCallbacks->attr("on_player_spectate");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, targetPlayerId);
+				func(playerId, targetPlayerId);
 		}
 	}
 	catch (...)
@@ -628,7 +628,7 @@ void OnPlayerCrashReport(int32_t playerId, const char* report)
 		{
 			auto func = moduleCallbacks->attr("on_player_crash_report");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, report);
+				func(playerId, report);
 		}
 	}
 	catch (...)
@@ -645,7 +645,7 @@ void OnVehicleUpdate(int32_t vehicleId, vcmpVehicleUpdate updateType)
 		{
 			auto func = moduleCallbacks->attr("on_vehicle_update");
 			if (py::isinstance<py::function>(func))
-				func.call(vehicleId, static_cast<int32_t>(updateType));
+				func(vehicleId, static_cast<int32_t>(updateType));
 		}
 	}
 	catch (...)
@@ -662,7 +662,7 @@ void OnVehicleExplode(int32_t vehicleId)
 		{
 			auto func = moduleCallbacks->attr("on_vehicle_explode");
 			if (py::isinstance<py::function>(func))
-				func.call(vehicleId);
+				func(vehicleId);
 		}
 	}
 	catch (...)
@@ -679,7 +679,7 @@ void OnVehicleRespawn(int32_t vehicleId)
 		{
 			auto func = moduleCallbacks->attr("on_vehicle_respawn");
 			if (py::isinstance<py::function>(func))
-				func.call(vehicleId);
+				func(vehicleId);
 		}
 	}
 	catch (...)
@@ -696,7 +696,7 @@ void OnObjectShot(int32_t objectId, int32_t playerId, int32_t weaponId)
 		{
 			auto func = moduleCallbacks->attr("on_object_shot");
 			if (py::isinstance<py::function>(func))
-				func.call(objectId, playerId, weaponId);
+				func(objectId, playerId, weaponId);
 		}
 	}
 	catch (...)
@@ -713,7 +713,7 @@ void OnObjectTouched(int32_t objectId, int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_object_touched");
 			if (py::isinstance<py::function>(func))
-				func.call(objectId, playerId);
+				func(objectId, playerId);
 		}
 	}
 	catch (...)
@@ -732,7 +732,7 @@ uint8_t OnPickupPickAttempt(int32_t pickupId, int32_t playerId)
 			auto func = moduleCallbacks->attr("on_pickup_pick_attempt");
 			if (py::isinstance<py::function>(func))
 			{
-				py::object resobj = func.call(pickupId, playerId);
+				py::object resobj = func(pickupId, playerId);
 				if (py::isinstance<py::bool_>(resobj))
 					retval = resobj.cast<uint8_t>();
 			}
@@ -753,7 +753,7 @@ void OnPickupPicked(int32_t pickupId, int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_pickup_picked");
 			if (py::isinstance<py::function>(func))
-				func.call(pickupId, playerId);
+				func(pickupId, playerId);
 		}
 	}
 	catch (...)
@@ -770,7 +770,7 @@ void OnPickupRespawn(int32_t pickupId)
 		{
 			auto func = moduleCallbacks->attr("on_pickup_respawn");
 			if (py::isinstance<py::function>(func))
-				func.call(pickupId);
+				func(pickupId);
 		}
 	}
 	catch (...)
@@ -787,7 +787,7 @@ void OnCheckpointEntered(int32_t checkPointId, int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_checkpoint_entered");
 			if (py::isinstance<py::function>(func))
-				func.call(checkPointId, playerId);
+				func(checkPointId, playerId);
 		}
 	}
 	catch (...)
@@ -804,7 +804,7 @@ void OnCheckpointExited(int32_t checkPointId, int32_t playerId)
 		{
 			auto func = moduleCallbacks->attr("on_checkpoint_exited");
 			if (py::isinstance<py::function>(func))
-				func.call(checkPointId, playerId);
+				func(checkPointId, playerId);
 		}
 	}
 	catch (...)
@@ -821,7 +821,7 @@ void OnEntityPoolChange(vcmpEntityPool entityType, int32_t entityId, uint8_t isD
 		{
 			auto func = moduleCallbacks->attr("on_entity_pool_change");
 			if (py::isinstance<py::function>(func))
-				func.call(static_cast<int32_t>(entityType), entityId, py::bool_(isDeleted != 0));
+				func(static_cast<int32_t>(entityType), entityId, py::bool_(isDeleted != 0));
 		}
 	}
 	catch (...)
@@ -843,7 +843,7 @@ void OnServerPerformanceReport(size_t entryCount, const char** descriptions, uin
 				for (size_t i = 0; i < entryCount; i++) {
 					dict[descriptions[i]] = times[i];
 				}
-				func.call(dict);
+				func(dict);
 			}
 		}
 	}
@@ -862,7 +862,7 @@ void OnPlayerModuleList(int32_t playerId, const char* list)
 		{
 			auto func = moduleCallbacks->attr("on_player_module_list");
 			if (py::isinstance<py::function>(func))
-				func.call(playerId, list);
+				func(playerId, list);
 		}
 	}
 	catch (...)
