@@ -889,6 +889,11 @@ typedef struct {
 	/* GetLastError: vcmpErrorNoSuchEntity */
 	uint8_t (*IsObjectTouchedReportEnabled) (int32_t objectId);
 
+} PluginFuncs;
+
+typedef struct {
+	PluginFuncs base;
+
 	// TODO: MOVE LATER
 	vcmpError (*GetPlayerModuleList) (int32_t playerId);
 
@@ -907,7 +912,7 @@ typedef struct {
 	/* GetLastError: vcmpErrorNoSuchEntity */
 	uint32_t(*GetVehicleLightsData) (int32_t vehicleId);
 
-} PluginFuncs;
+} PluginFuncsNew;
 
 typedef struct {
 	uint32_t structSize;
@@ -969,7 +974,12 @@ typedef struct {
 	void (*OnEntityPoolChange) (vcmpEntityPool entityType, int32_t entityId, uint8_t isDeleted);
 	void (*OnServerPerformanceReport) (size_t entryCount, const char** descriptions, uint64_t* times);
 
+} PluginCallbacks;
+
+typedef struct {
+	PluginCallbacks base;
+
 	// TODO: MOVE LATER
 	void(*OnPlayerModuleList) (int32_t playerId, const char* list);
 
-} PluginCallbacks;
+} PluginCallbacksNew;
