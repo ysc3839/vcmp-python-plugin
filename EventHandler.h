@@ -931,5 +931,9 @@ void RegisterCallbacks(PluginCallbacks* callbacks)
 	callbacks->OnServerPerformanceReport = OnServerPerformanceReport;
 
 	// TODO: MOVE LATER
-	callbacks->OnPlayerModuleList = OnPlayerModuleList;
+	if (haveNewCallbacks)
+	{
+		PluginCallbacksNew *callbacksNew = reinterpret_cast<PluginCallbacksNew*>(callbacks);
+		callbacksNew->OnPlayerModuleList = OnPlayerModuleList;
+	}
 }

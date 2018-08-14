@@ -45,8 +45,6 @@ const char *callbackNames[] = {
 	"on_checkpoint_exited",
 	"on_entity_pool_change",
 	"on_server_performance_report",
-	// TODO: MOVE LATER
-	"on_player_module_list"
 };
 
 void RegisterFunctions(py::module functions)
@@ -1124,26 +1122,48 @@ void RegisterFunctions(py::module functions)
 	});
 
 	// TODO: MOVE LATER
+#define raise_not_impl() { PyErr_SetString(PyExc_NotImplementedError, "server does not implement this function"); throw py::error_already_set(); }
 	functions.def("get_player_module_list", [](int32_t playerId) {
-		return static_cast<int32_t>(vcmpFunctions->GetPlayerModuleList(playerId));
+		if (haveNewFunctions)
+			return py::int_(static_cast<int32_t>(reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->GetPlayerModuleList(playerId)));
+		else
+			raise_not_impl();
 	});
 	functions.def("set_pickup_option", [](int32_t pickupId, int32_t option, bool toggle) {
-		return static_cast<int32_t>(vcmpFunctions->SetPickupOption(pickupId, static_cast<vcmpPickupOption>(option), toggle));
+		if (haveNewFunctions)
+			return py::int_(static_cast<int32_t>(reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->SetPickupOption(pickupId, static_cast<vcmpPickupOption>(option), toggle)));
+		else
+			raise_not_impl();
 	});
 	functions.def("get_pickup_option", [](int32_t pickupId, int32_t option) {
-		return py::bool_(vcmpFunctions->GetPickupOption(pickupId, static_cast<vcmpPickupOption>(option)) != 0);
+		if (haveNewFunctions)
+			return py::bool_(reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->GetPickupOption(pickupId, static_cast<vcmpPickupOption>(option)) != 0);
+		else
+			raise_not_impl();
 	});
 	functions.def("set_fall_timer", [](uint16_t timeRate) {
-		vcmpFunctions->SetFallTimer(timeRate);
+		if (haveNewFunctions)
+			reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->SetFallTimer(timeRate);
+		else
+			raise_not_impl();
 	});
 	functions.def("get_fall_timer", []() {
-		return vcmpFunctions->GetFallTimer();
+		if (haveNewFunctions)
+			return py::int_(reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->GetFallTimer());
+		else
+			raise_not_impl();
 	});
 	functions.def("set_vehicle_lights_data", [](int32_t vehicleId, uint32_t lightsData) {
-		return static_cast<int32_t>(vcmpFunctions->SetVehicleLightsData(vehicleId, lightsData));
+		if (haveNewFunctions)
+			return py::int_(static_cast<int32_t>(reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->SetVehicleLightsData(vehicleId, lightsData)));
+		else
+			raise_not_impl();
 	});
 	functions.def("get_vehicle_lights_data", [](int32_t vehicleId) {
-		return vcmpFunctions->GetVehicleLightsData(vehicleId);
+		if (haveNewFunctions)
+			return py::int_(reinterpret_cast<PluginFuncsNew*>(vcmpFunctions)->GetVehicleLightsData(vehicleId));
+		else
+			raise_not_impl();
 	});
 }
 
@@ -1152,11 +1172,26 @@ PYBIND11_EMBEDDED_MODULE(_vcmp, m)
 	py::module functions = m.def_submodule("functions");
 	py::module callbacks = m.def_submodule("callbacks");
 
+	functions.attr("struct_size") = vcmpFunctions->structSize;
 	RegisterFunctions(functions);
 
+	callbacks.attr("struct_size") = vcmpCallbacks->structSize;
 	for (auto name : callbackNames)
 	{
 		callbacks.attr(name) = py::none();
+	}
+
+	// TODO: MOVE LATER
+	if (haveNewCallbacks)
+	{
+		const char *callbackNamesNew[] = {
+			"on_player_module_list"
+		};
+
+		for (auto name : callbackNamesNew)
+		{
+			callbacks.attr(name) = py::none();
+		}
 	}
 
 	moduleCallbacks = new py::module(callbacks);

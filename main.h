@@ -14,7 +14,12 @@ namespace py = pybind11;
 #endif
 
 PluginFuncs* vcmpFunctions;
+PluginCallbacks* vcmpCallbacks;
 py::module* moduleCallbacks = nullptr;
+
+// TODO: MOVE LATER
+bool haveNewFunctions = false;
+bool haveNewCallbacks = false;
 
 void PythonExceptionHandler()
 {
