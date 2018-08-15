@@ -1,0 +1,88 @@
+version: "{build}"
+image:
+  - Ubuntu
+  - Visual Studio 2017
+
+environment:
+  APPVEYOR_YML_DISABLE_PS_LINUX: true
+
+init:
+  - cmd: git config --global core.autocrlf false
+  - sh: mkdir -p /home/appveyor/apt-archives
+
+install:
+  # Clone submodule
+  - git submodule update --init --recursive
+  # Install Python on Ubuntu
+  - sh: sudo add-apt-repository ppa:deadsnakes/ppa -y
+  - sh: sudo apt update
+  - sh: sudo apt -y install python3.5-dev python3.6-dev python3.7-dev
+
+build_script:
+  - mkdir build_cpy37 build_cpy36 build_cpy35
+  - cmd: mkdir build_cpy37_32 build_cpy36_32 build_cpy35_32
+  - sh: |
+      (
+        cd build_cpy37
+        cmake -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE="/usr/bin/python3.7" ..
+        make
+      ) &
+      jobids="$!"
+  - sh: |
+      (
+        cd build_cpy36
+        cmake -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE="/usr/bin/python3.6" ..
+        make
+      ) &
+      jobids="$jobids $!"
+  - sh: |
+      (
+        cd build_cpy35
+        cmake -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE="/usr/bin/python3.5" ..
+        make
+      ) &
+      jobids="$jobids $!"
+  - sh: wait $jobids
+  - ps: |
+      Start-Job -Init ([ScriptBlock]::Create("Set-Location '$pwd\build_cpy37'")) -Script {
+        cmake -G "Visual Studio 15 2017 Win64" -DPYTHON_EXECUTABLE="C:\Python37-x64\python.exe" ..
+        cmake --build . --config Release
+      }
+  - ps: |
+      Start-Job -Init ([ScriptBlock]::Create("Set-Location '$pwd\build_cpy36'")) -Script {
+        cmake -G "Visual Studio 15 2017 Win64" -DPYTHON_EXECUTABLE="C:\Python36-x64\python.exe" ..
+        cmake --build . --config Release
+      }
+  - ps: |
+      Start-Job -Init ([ScriptBlock]::Create("Set-Location '$pwd\build_cpy35'")) -Script {
+        cmake -G "Visual Studio 15 2017 Win64" -DPYTHON_EXECUTABLE="C:\Python35-x64\python.exe" ..
+        cmake --build . --config Release
+      }
+  # 32 bits
+  - ps: |
+      Start-Job -Init ([ScriptBlock]::Create("Set-Location '$pwd\build_cpy37_32'")) -Script {
+        cmake -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python37\python.exe" ..
+        cmake --build . --config Release
+      }
+  - ps: |
+      Start-Job -Init ([ScriptBlock]::Create("Set-Location '$pwd\build_cpy36_32'")) -Script {
+        cmake -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python36\python.exe" ..
+        cmake --build . --config Release
+      }
+  - ps: |
+      Start-Job -Init ([ScriptBlock]::Create("Set-Location '$pwd\build_cpy35_32'")) -Script {
+        cmake -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python35\python.exe" ..
+        cmake --build . --config Release
+      }
+  - ps: Get-Job | Wait-Job | Receive-Job
+
+on_success:
+  - sh: appveyor PushArtifact build_cpy37/vcmp-python-plugin-cpy37-rel64.so -FileName vcmp-python-plugin-cpy37-rel64.so
+  - sh: appveyor PushArtifact build_cpy36/vcmp-python-plugin-cpy36-rel64.so -FileName vcmp-python-plugin-cpy36-rel64.so
+  - sh: appveyor PushArtifact build_cpy35/vcmp-python-plugin-cpy35-rel64.so -FileName vcmp-python-plugin-cpy35-rel64.so
+  - ps: Push-AppveyorArtifact build_cpy37/Release/vcmp-python-plugin-cpy37-rel64.dll -FileName vcmp-python-plugin-cpy37-rel64.dll
+  - ps: Push-AppveyorArtifact build_cpy36/Release/vcmp-python-plugin-cpy36-rel64.dll -FileName vcmp-python-plugin-cpy36-rel64.dll
+  - ps: Push-AppveyorArtifact build_cpy35/Release/vcmp-python-plugin-cpy35-rel64.dll -FileName vcmp-python-plugin-cpy35-rel64.dll
+  - ps: Push-AppveyorArtifact build_cpy37_32/Release/vcmp-python-plugin-cpy37-rel32.dll -FileName vcmp-python-plugin-cpy37-rel32.dll
+  - ps: Push-AppveyorArtifact build_cpy36_32/Release/vcmp-python-plugin-cpy36-rel32.dll -FileName vcmp-python-plugin-cpy36-rel32.dll
+  - ps: Push-AppveyorArtifact build_cpy35_32/Release/vcmp-python-plugin-cpy35-rel32.dll -FileName vcmp-python-plugin-cpy35-rel32.dll
