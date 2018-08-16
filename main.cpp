@@ -2,7 +2,7 @@
 #include "EventHandler.h"
 #include "PythonModule.h"
 
-extern "C" EXPORT unsigned int VcmpPluginInit(PluginFuncs* pluginFunctions, PluginCallbacks* pluginCallbacks, PluginInfo* pluginInfo)
+extern "C" EXPORT uint32_t VcmpPluginInit(PluginFuncs* pluginFunctions, PluginCallbacks* pluginCallbacks, PluginInfo* pluginInfo)
 {
 	pluginInfo->pluginVersion = 0x103;
 	pluginInfo->apiMajorVersion = PLUGIN_API_MAJOR;
