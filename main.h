@@ -33,8 +33,22 @@ void PythonExceptionHandler()
 		if (e.matches(PyExc_KeyboardInterrupt) || e.matches(PyExc_SystemExit))
 			shutdown = true;
 
-		e.restore();
-		PyErr_Print();
+		{
+			auto sys = py::module::import("sys");
+			PyObject *pstderr = sys.attr("stderr").ptr();
+
+			auto f = py::module::import("io").attr("StringIO")();
+
+			sys.attr("stderr") = f;
+
+			e.restore();
+			PyErr_Print();
+
+			sys.attr("stderr") = pstderr;
+
+			std::string str(py::str(f.attr("getvalue")()));
+			vcmpFunctions->LogMessage("%s", str.c_str());
+		}
 
 		if (shutdown)
 			vcmpFunctions->ShutdownServer();
