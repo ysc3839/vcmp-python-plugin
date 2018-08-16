@@ -58,3 +58,25 @@ void PythonExceptionHandler()
 		vcmpFunctions->LogMessage("Exception: %s", e.what());
 	}
 }
+
+bool ReadServerConfig(const char *filename, std::string &moduleName)
+{
+	std::ifstream f(filename, std::ios::binary);
+
+	std::string prefix("pymodule ");
+	for (std::string line; std::getline(f, line);)
+	{
+		if (line.compare(0, prefix.size(), prefix) == 0)
+		{
+			moduleName = line.substr(prefix.size());
+			return true;
+		}
+	}
+	return false;
+}
+
+#if defined(__x86_64__) || defined(_M_X64)
+#define CONFIG_FILENAME_ARCH "server64.cfg"
+#else
+#define CONFIG_FILENAME_ARCH "server32.cfg"
+#endif

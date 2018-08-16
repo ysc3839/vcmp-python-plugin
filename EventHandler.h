@@ -2,25 +2,16 @@
 
 uint8_t OnServerInitialise()
 {
-	uint8_t retval = 0;
-
-	std::ifstream f("server.cfg", std::ios::binary);
+	uint8_t retval = 1;
 
 	std::string moduleName;
-	std::string prefix("pymodule ");
-	for (std::string line; std::getline(f, line);)
-	{
-		if (line.compare(0, prefix.size(), prefix) == 0)
-		{
-			moduleName = line.substr(prefix.size());
-			retval = 1;
-			break;
-		}
-	}
+	bool found = ReadServerConfig("server.cfg", moduleName);
+	found |= ReadServerConfig(CONFIG_FILENAME_ARCH, moduleName);
 
 	try
 	{
-		py::module::import(moduleName.c_str());
+		if (found)
+			py::module::import(moduleName.c_str());
 
 		if (moduleCallbacks)
 		{
