@@ -77,13 +77,15 @@ build_script:
       }
   - ps: Get-Job | Wait-Job | Receive-Job
 
-on_success:
-  - sh: appveyor PushArtifact build_cpy37/vcmp-python-plugin-cpy37-rel64.so -FileName vcmp-python-plugin-cpy37-rel64.so
-  - sh: appveyor PushArtifact build_cpy36/vcmp-python-plugin-cpy36-rel64.so -FileName vcmp-python-plugin-cpy36-rel64.so
-  - sh: appveyor PushArtifact build_cpy35/vcmp-python-plugin-cpy35-rel64.so -FileName vcmp-python-plugin-cpy35-rel64.so
-  - ps: Push-AppveyorArtifact build_cpy37/Release/vcmp-python-plugin-cpy37-rel64.dll -FileName vcmp-python-plugin-cpy37-rel64.dll
-  - ps: Push-AppveyorArtifact build_cpy36/Release/vcmp-python-plugin-cpy36-rel64.dll -FileName vcmp-python-plugin-cpy36-rel64.dll
-  - ps: Push-AppveyorArtifact build_cpy35/Release/vcmp-python-plugin-cpy35-rel64.dll -FileName vcmp-python-plugin-cpy35-rel64.dll
-  - ps: Push-AppveyorArtifact build_cpy37_32/Release/vcmp-python-plugin-cpy37-rel32.dll -FileName vcmp-python-plugin-cpy37-rel32.dll
-  - ps: Push-AppveyorArtifact build_cpy36_32/Release/vcmp-python-plugin-cpy36-rel32.dll -FileName vcmp-python-plugin-cpy36-rel32.dll
-  - ps: Push-AppveyorArtifact build_cpy35_32/Release/vcmp-python-plugin-cpy35-rel32.dll -FileName vcmp-python-plugin-cpy35-rel32.dll
+artifacts:
+  - path: '**\*.so'
+  - path: '**\*.dll'
+
+deploy:
+  description: ''
+  provider: GitHub
+  auth_token:
+    secure: JFcBo1SYmjlb31U5qawX2pSSCXfnGYTjjjyr1Gv4DWnmiQQ43GT5RFFH2jS4lt+P
+  artifact: '/.*\.(so|dll)/'
+  draft: true
+  prerelease: false
