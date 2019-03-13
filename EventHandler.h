@@ -55,6 +55,9 @@ void OnServerShutdown()
 		delete moduleCallbacks;
 	moduleCallbacks = nullptr;
 
+	if (logFile)
+		fclose(logFile);
+
 	py::finalize_interpreter();
 }
 

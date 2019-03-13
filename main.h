@@ -16,10 +16,18 @@ namespace py = pybind11;
 PluginFuncs* vcmpFunctions;
 PluginCallbacks* vcmpCallbacks;
 py::module* moduleCallbacks = nullptr;
+FILE* logFile = nullptr;
 
 // TODO: MOVE LATER
 bool haveNewFunctions = false;
 bool haveNewCallbacks = false;
+
+void PrintStdErrAndLogFile(const char* str)
+{
+	fputs(str, stderr);
+	if (logFile)
+		fputs(str, logFile);
+}
 
 void PythonExceptionHandler()
 {
@@ -27,7 +35,7 @@ void PythonExceptionHandler()
 	{
 		throw;
 	}
-	catch (py::error_already_set e)
+	catch (py::error_already_set &e)
 	{
 		bool shutdown = false;
 		if (e.matches(PyExc_KeyboardInterrupt) || e.matches(PyExc_SystemExit))
@@ -35,7 +43,7 @@ void PythonExceptionHandler()
 
 		{
 			auto sys = py::module::import("sys");
-			PyObject *pstderr = sys.attr("stderr").ptr();
+			py::object pystderr = sys.attr("stderr");
 
 			auto f = py::module::import("io").attr("StringIO")();
 
@@ -44,16 +52,16 @@ void PythonExceptionHandler()
 			e.restore();
 			PyErr_Print();
 
-			sys.attr("stderr") = pstderr;
+			sys.attr("stderr") = pystderr;
 
 			std::string str(py::str(f.attr("getvalue")()));
-			vcmpFunctions->LogMessage("%s", str.c_str());
+			PrintStdErrAndLogFile(str.c_str());
 		}
 
 		if (shutdown)
 			vcmpFunctions->ShutdownServer();
 	}
-	catch (std::exception e)
+	catch (const std::exception &e)
 	{
 		vcmpFunctions->LogMessage("Exception: %s", e.what());
 	}
