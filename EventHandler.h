@@ -51,7 +51,8 @@ void OnServerShutdown()
 		PythonExceptionHandler();
 	}
 
-	delete moduleCallbacks;
+	if (moduleCallbacks)
+		delete moduleCallbacks;
 	moduleCallbacks = nullptr;
 
 	py::finalize_interpreter();
