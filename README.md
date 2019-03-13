@@ -1,4 +1,4 @@
-# vcmp-python-plugin
+# vcmp-python-plugin [![Build status](https://ci.appveyor.com/api/projects/status/6kcnwdbgkdxyux87?svg=true)](https://ci.appveyor.com/project/ysc3839/vcmp-python-plugin)
 Python binding plugin for VC:MP.
 
 # Building
